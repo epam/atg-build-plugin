@@ -20,7 +20,7 @@ import org.gradle.api.Project
 
 class ATGProjectModule extends ATGModule {
 
-    private Project project
+    private final Project project
 
     ATGProjectModule(String moduleName, File moduleLocation, Project project) {
         super(moduleName, moduleLocation)

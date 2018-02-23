@@ -19,9 +19,11 @@ package com.epam.atg.gradle.build.utils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.jar.Attributes
 import java.util.jar.Manifest
 
 class ManifestUtils {
+
     public static final String META_INF_DIR_NAME = "META-INF"
     public static final String MANIFEST_FILE_NAME = "MANIFEST.MF"
     public static final String MANIFEST_ATTRIBUTE_ATG_PRODUCT_FULL = 'ATG-Product-Full'
@@ -34,10 +36,10 @@ class ManifestUtils {
     public static final String ATG_MODULE_SEPARATOR = "."
     public static final String URI_PATH_SEPARATOR = "/"
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ManifestUtils.class)
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManifestUtils.class)
 
     static String getManifestPath(File moduleDirectory) {
-        return moduleDirectory.getAbsolutePath() + File.separator + META_INF_DIR_NAME + File.separator + MANIFEST_FILE_NAME
+        return moduleDirectory.absolutePath + File.separator + META_INF_DIR_NAME + File.separator + MANIFEST_FILE_NAME
     }
 
     static boolean isManifestExists(File moduleDirectory) {
@@ -78,7 +80,7 @@ class ManifestUtils {
 
     static List<String> getListValueFromManifestMainAttributes(Manifest manifest, String mainAttributeName) {
         String attributeStringValue = getMainAttribute(manifest, mainAttributeName)
-        def entries
+        String[] entries
         if (attributeStringValue) {
             entries = attributeStringValue.split(" +")
             entries = entries.collect { entry ->
@@ -103,7 +105,7 @@ class ManifestUtils {
     }
 
     static String convertRelativeURIPathToModuleName(URI relativeURI) {
-        return convertRelativeURIPathToModuleName(relativeURI.getPath())
+        return convertRelativeURIPathToModuleName(relativeURI.path)
     }
 
     static String convertRelativeURIPathToModuleName(String relativeURIPath) {
@@ -115,10 +117,10 @@ class ManifestUtils {
     }
 
     static String getDescription(Manifest manifest) {
-        def mainAttributes = manifest.getMainAttributes()
-        def atgProductFull = mainAttributes.getValue(MANIFEST_ATTRIBUTE_ATG_PRODUCT_FULL)
-        def atgProduct = mainAttributes.getValue(MANIFEST_ATTRIBUTE_ATG_PRODUCT)
-        def projectDescriptionOverride = null
+        Attributes mainAttributes = manifest.mainAttributes
+        String atgProductFull = mainAttributes.getValue(MANIFEST_ATTRIBUTE_ATG_PRODUCT_FULL)
+        String atgProduct = mainAttributes.getValue(MANIFEST_ATTRIBUTE_ATG_PRODUCT)
+        String projectDescriptionOverride = null
         if (atgProduct && atgProductFull) {
             projectDescriptionOverride = "$atgProduct - $atgProductFull"
         } else if (atgProductFull) {
@@ -138,8 +140,7 @@ class ManifestUtils {
     }
 
     private static String getMainAttribute(Manifest manifest, String attributeName) {
-        def mainAttributes = manifest.getMainAttributes()
-        return mainAttributes.getValue(attributeName)
+        return manifest.mainAttributes.getValue(attributeName)
     }
 
 }

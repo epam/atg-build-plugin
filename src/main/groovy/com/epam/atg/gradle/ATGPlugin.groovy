@@ -28,8 +28,7 @@ import org.slf4j.LoggerFactory
  */
 class ATGPlugin implements Plugin<PluginAware> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ATGPlugin.getClass())
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ATGPlugin.class)
     private static final List<? extends Initializer> INITIALIZERS = [
             new ATGPluginExtensionProjectPluginInitializer(),
             new RootProjectPluginInitializer(),
@@ -50,12 +49,11 @@ class ATGPlugin implements Plugin<PluginAware> {
             }
         }
         if (!initialized) {
-            LOGGER.warn("Unsupported target type {}", target.class)
+            LOGGER.warn('No one initializer was been applied for "{}"', target)
         }
     }
 
     static ATGPluginExtension getPluginExtension(Project project) {
         return project.extensions.getByName(ATGPluginConstants.ATG_PLUGIN_EXTENSION_NAME) as ATGPluginExtension
     }
-
 }

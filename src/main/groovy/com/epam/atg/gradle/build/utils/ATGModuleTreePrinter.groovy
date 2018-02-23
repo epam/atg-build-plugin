@@ -39,7 +39,7 @@ class ATGModuleTreePrinter {
     private void printTree(String moduleName, int offset, PrintWriter printWriter) {
         printWriter.print('|   ' * offset + '+---')
         printWriter.println(moduleName)
-        def dependencies = repository.getDependencies(moduleName)
+        List<String> dependencies = repository.getDependencies(moduleName)
         if (dependencies.isEmpty()) {
             return
         }

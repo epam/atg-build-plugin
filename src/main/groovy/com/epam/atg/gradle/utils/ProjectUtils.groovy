@@ -21,8 +21,9 @@ import org.gradle.api.Project
 import org.gradle.api.UnknownProjectException
 
 class ProjectUtils {
+
     static Project findAtgRootProject(Project project) throws UnknownProjectException {
-        def projectPathToModuleName = getAtgRootProjectsPathsWithModulesNames(project)
+        Map<String, String> projectPathToModuleName = getAtgRootProjectsPathsWithModulesNames(project)
         String projectPath = project.path
         for(String currentPath : projectPathToModuleName.keySet()) {
             if(projectPath.startsWith(currentPath)) {
@@ -33,7 +34,7 @@ class ProjectUtils {
     }
 
     static boolean isChildOfAtgRootProject(Project project) {
-        def projectPathToModuleName = getAtgRootProjectsPathsWithModulesNames(project)
+        Map<String, String> projectPathToModuleName = getAtgRootProjectsPathsWithModulesNames(project)
         String projectPath = project.path
         for(String currentPath : projectPathToModuleName.keySet()) {
             if(projectPath.startsWith(currentPath)) {
@@ -62,7 +63,7 @@ class ProjectUtils {
     }
 
     static Project findAtgRootProjectForModule(String moduleName, Project anyProject) {
-        for(def entry : getAtgRootProjectsPathsWithModulesNames(anyProject)) {
+        for(Map.Entry<String, String> entry : getAtgRootProjectsPathsWithModulesNames(anyProject)) {
             if(moduleName.startsWith(entry.value)) {
                 return anyProject.project(entry.key)
             }

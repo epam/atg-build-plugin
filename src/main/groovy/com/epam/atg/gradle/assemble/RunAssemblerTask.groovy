@@ -29,134 +29,139 @@ import org.gradle.util.ConfigureUtil
  * It iterates over a list of script configurations which define the parameters for each assembly.
  */
 class RunAssemblerTask extends DefaultTask {
-  private String outputDir = null
-  private String earName = null
-  private List layers = []
-  private String atgRootDir = null
-  private boolean cleanOnBuild = true
-  private List modules = []
-  private OptionsContainer options = new OptionsContainer()
 
-  RunAssemblerTask() {
-    description = 'Assembles an Oracle Commerce (ATG) EAR.'
-    group = 'atg'
-    if(project.hasProperty('atgRoot')) {
-      atgRootDir = project.atgRoot
-    }
-    outputDir = "${project.buildDir.absolutePath}/ears"
-  }
+    private static final String EAR_EXT = ".ear"
 
-  String getOutputDir() {
-    return outputDir
-  }
+    private String outputDir = null
+    private String earName = null
+    private List layers = []
+    private String atgRootDir = null
+    private boolean cleanOnBuild = true
+    private List modules = []
+    private OptionsContainer options = new OptionsContainer()
+    private RunAssemblerExecutor executor = new RunAssemblerExecutor()
 
-  void setOutputDir(String pOutputDir) {
-    outputDir = pOutputDir
-  }
-
-  List getLayers() {
-    return layers
-  }
-
-  void setLayers(List pLayers) {
-    layers = pLayers
-  }
-
-  String getAtgRootDir() {
-    return atgRootDir
-  }
-
-  void setAtgRootDir(String atgRootDir) {
-    this.atgRootDir = atgRootDir
-  }
-
-  List getModules() {
-    return modules
-  }
-
-  void setModules(List pModules) {
-    modules = pModules
-  }
-
-  OptionsContainer getOptions() {
-    return options
-  }
-
-  void setOptions(OptionsContainer pOptions) {
-    options = pOptions
-  }
-
-  void options(Closure closure) {
-    ConfigureUtil.configure(closure, options)
-  }
-
-  String getEarName() {
-    return earName
-  }
-
-  void setEarName(String pEarName) {
-    earName = pEarName
-  }
-
-  boolean getCleanOnBuild() {
-    return cleanOnBuild
-  }
-
-  void setCleanOnBuild(boolean pCleanOnBuild) {
-    cleanOnBuild = pCleanOnBuild
-  }
-
-  @TaskAction
-  void executeCommandLine() {
-    if(!atgRootDir) {
-      atgRootDir = project.property(ATGPluginConstants.PROJECT_ATG_ROOT_PROPERTY)
-      if(!atgRootDir) {
-        throw new IllegalArgumentException('"atgRootDir" is required property.')
-      }
+    RunAssemblerTask() {
+        description = 'Assembles an Oracle Commerce (ATG) EAR.'
+        group = 'atg'
+        if (project.hasProperty('atgRoot')) {
+            atgRootDir = project.atgRoot
+        }
+        outputDir = "${project.buildDir.absolutePath}/ears"
     }
 
-    if(modules == null || modules.isEmpty()) {
-      throw new IllegalArgumentException('Can\'t assemble empty modules list.')
-    }
-    if(!earName){
-      earName = name
+    String getOutputDir() {
+        return outputDir
     }
 
-    if(!earName.toLowerCase().endsWith(".ear")) {
-      earName += ".ear"
+    void setOutputDir(String pOutputDir) {
+        outputDir = pOutputDir
     }
 
-    if(cleanOnBuild) {
-      def target = project.file("$outputDir/$earName")
-      if (target.exists()) {
-        project.delete(target)
-      }
+    List getLayers() {
+        return layers
     }
 
-    if(!project.file(outputDir).exists()) {
-      project.mkdir(outputDir)
+    void setLayers(List pLayers) {
+        layers = pLayers
     }
 
-    List<File> tempLinks = []
-    Map atgRootModules = ProjectUtils.getAtgRootProjectsPathsWithModulesNames(project)
-    atgRootModules.each { String projectPath, String moduleName ->
-      File atgModuleFile = new File("$atgRootDir/$moduleName")
-      if(!atgModuleFile.exists()) {
-        Project rootAtgProject = project.project(projectPath)
-        FileUtils.createLink(atgModuleFile, rootAtgProject.projectDir)
-        tempLinks.add(atgModuleFile)
-        project.logger.info("Added temporary link from $rootAtgProject.projectDir to $atgModuleFile")
-      }
+    String getAtgRootDir() {
+        return atgRootDir
     }
 
-    try {
-      def args = RunAssemblerCommandLineBuilder.build(this)
-      RunAssemblerExecutor.exec(project, atgRootDir, args)
-    } finally {
-      for(File link in tempLinks) {
-        link.delete()
-        project.logger.info("Removed temporary link $link")
-      }
+    void setAtgRootDir(String atgRootDir) {
+        this.atgRootDir = atgRootDir
     }
-  }
+
+    List getModules() {
+        return modules
+    }
+
+    void setModules(List pModules) {
+        modules = pModules
+    }
+
+    OptionsContainer getOptions() {
+        return options
+    }
+
+    void setOptions(OptionsContainer pOptions) {
+        options = pOptions
+    }
+
+    void options(Closure closure) {
+        ConfigureUtil.configure(closure, options)
+    }
+
+    String getEarName() {
+        return earName
+    }
+
+    void setEarName(String pEarName) {
+        earName = pEarName
+    }
+
+    boolean getCleanOnBuild() {
+        return cleanOnBuild
+    }
+
+    void setCleanOnBuild(boolean pCleanOnBuild) {
+        cleanOnBuild = pCleanOnBuild
+    }
+
+    @TaskAction
+    void executeCommandLine() {
+        if (!atgRootDir) {
+            atgRootDir = project.property(ATGPluginConstants.PROJECT_ATG_ROOT_PROPERTY)
+            if (!atgRootDir) {
+                throw new IllegalArgumentException(
+                        "\"$ATGPluginConstants.PROJECT_ATG_ROOT_PROPERTY\" is required property.")
+            }
+        }
+
+        if (modules == null || modules.isEmpty()) {
+            throw new IllegalArgumentException('Can\'t assemble empty modules list.')
+        }
+        if (!earName) {
+            earName = name
+        }
+
+        if (!earName.toLowerCase().endsWith(EAR_EXT)) {
+            earName += EAR_EXT
+        }
+
+        if (cleanOnBuild) {
+            File target = project.file("$outputDir/$earName")
+            if (target.exists()) {
+                project.delete(target)
+            }
+        }
+
+        if (!project.file(outputDir).exists()) {
+            project.mkdir(outputDir)
+        }
+
+        List<File> tempLinks = []
+        Map atgRootModules = ProjectUtils.getAtgRootProjectsPathsWithModulesNames(project)
+        atgRootModules.each { String projectPath, String moduleName ->
+            File atgModuleFile = new File("$atgRootDir/$moduleName")
+            if (!atgModuleFile.exists()) {
+                Project rootAtgProject = project.project(projectPath)
+                FileUtils.createLink(atgModuleFile, rootAtgProject.projectDir)
+                tempLinks.add(atgModuleFile)
+                project.logger.info('Added temporary link from {} to {}', rootAtgProject.projectDir, atgModuleFile)
+            }
+        }
+
+        try {
+            List args = RunAssemblerCommandLineBuilder.build(this)
+            executor.exec(project, atgRootDir, args)
+        } finally {
+            for (File link in tempLinks) {
+                link.delete()
+                project.logger.info('Removed temporary link {}', link)
+            }
+        }
+    }
 }

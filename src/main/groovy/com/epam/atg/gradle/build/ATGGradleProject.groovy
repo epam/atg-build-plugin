@@ -25,6 +25,7 @@ import org.gradle.api.Project
 class ATGGradleProject {
 
     public static final String RESOURCES_JAR_FILENAME = 'resources.jar'
+
     private Set<String> addedDependenciesList
     private Project project
     private ATGProjectModule atgProjectModule
@@ -57,11 +58,11 @@ class ATGGradleProject {
     }
 
     File getProjectJarArchive() {
-        return new File(project.libsDirName + File.separator + project.jar.archiveName)
+        return new File(project.libsDirName + File.separator + project.jar.archiveName as String)
     }
 
     File getProjectResources() {
-        return new File(project.libsDirName + File.separator + RESOURCES_JAR_FILENAME)
+        return new File(project.libsDirName + File.separator + RESOURCES_JAR_FILENAME as String)
     }
 
     void clearModuleDependencyMarkers() {

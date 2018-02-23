@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory
 
 class ModulePluginInitializer extends AbstractProjectPluginInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(getClass())
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModulePluginInitializer.class)
 
     @Override
     protected boolean isSupportedProject(Project project) {
@@ -67,7 +67,8 @@ class ModulePluginInitializer extends AbstractProjectPluginInitializer {
                     outputFile.withPrintWriter { printWriter ->
                         printer.printDependencies(atgGradleProject.atgProjectModule.name, printWriter)
                     }
-                    println("Dependencies tree for project " + atgGradleProject.project.name + " printed to file " + outputFile.getAbsolutePath())
+                    println("Dependencies tree for project " + atgGradleProject.project.name +
+                            " printed to file " + outputFile.absolutePath)
                 } else {
                     println("Dependencies tree for project " + atgGradleProject.project.name + ":")
                     printer.printDependencies(atgGradleProject.atgProjectModule.name)
@@ -98,7 +99,7 @@ class ModulePluginInitializer extends AbstractProjectPluginInitializer {
     }
 
     private static void addConfigResources(ATGGradleProject atgGradleProject) {
-        String atgConfigPath = atgGradleProject.atgProjectModule.getAtgConfigPath()
+        String atgConfigPath = atgGradleProject.atgProjectModule.atgConfigPath
         if (!atgConfigPath || !atgGradleProject.project.file(atgConfigPath).isDirectory()) {
             return
         }
@@ -116,8 +117,8 @@ class ModulePluginInitializer extends AbstractProjectPluginInitializer {
     }
 
     private static void defineProjectDescription(ATGGradleProject atgGradleProject) {
-        def projectDescriptionOverride = atgGradleProject.atgProjectModule.getDescription()
-        if (!atgGradleProject.project.getDescription() && projectDescriptionOverride) {
+        String projectDescriptionOverride = atgGradleProject.atgProjectModule.description
+        if (!atgGradleProject.project.description && projectDescriptionOverride) {
             atgGradleProject.project.setDescription(projectDescriptionOverride)
         }
     }

@@ -53,10 +53,10 @@ class AssembleATGTask extends DefaultTask {
     boolean omitLicenses = true
 
     @TaskAction
-    def assembleEAR() {
-        if(!dynamoRoot) {
+    void assembleEAR() {
+        if (!dynamoRoot) {
             dynamoRoot = project.property(ATGPluginConstants.PROJECT_ATG_ROOT_PROPERTY)
-            if(!dynamoRoot) {
+            if (!dynamoRoot) {
                 throw new IllegalArgumentException('"dynamoRoot" is required property.')
             }
         }
@@ -64,11 +64,11 @@ class AssembleATGTask extends DefaultTask {
         Map atgRootModules = ProjectUtils.getAtgRootProjectsPathsWithModulesNames(project)
         atgRootModules.each { String projectPath, String moduleName ->
             File atgModuleFile = new File("$dynamoRoot/$moduleName")
-            if(!atgModuleFile.exists()) {
+            if (!atgModuleFile.exists()) {
                 Project rootAtgProject = project.project(projectPath)
                 FileUtils.createLink(atgModuleFile, rootAtgProject.projectDir)
                 tempLinks.add(atgModuleFile)
-                project.logger.info("Added temporary link from $rootAtgProject.projectDir to $atgModuleFile")
+                project.logger.info('Added temporary link from {} to {}', rootAtgProject.projectDir, atgModuleFile)
             }
         }
 
@@ -101,7 +101,7 @@ class AssembleATGTask extends DefaultTask {
 
                 omitLicenses      : omitLicenses
         ]
-        def definedKeys = assemblerEARTaskParameters.findAll {
+        List definedKeys = assemblerEARTaskParameters.findAll {
             (it.value != null && ((it.value instanceof String && !((String) it.value).isEmpty()) || !it.value instanceof String))
         }.collect {
             it.key
@@ -113,9 +113,9 @@ class AssembleATGTask extends DefaultTask {
                 assemblerEARTaskParameters
             }
         } finally {
-            for(File link in tempLinks) {
+            for (File link in tempLinks) {
                 link.delete()
-                project.logger.info("Removed temporary link $link")
+                project.logger.info('Removed temporary link {}', link)
             }
         }
     }

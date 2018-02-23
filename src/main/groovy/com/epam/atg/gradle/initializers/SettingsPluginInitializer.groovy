@@ -25,9 +25,8 @@ import org.slf4j.LoggerFactory
 
 class SettingsPluginInitializer implements Initializer<Settings> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SettingsPluginInitializer.getClass())
-
-    private static FileFilter projectFilter = new ProjectsFilter()
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingsPluginInitializer.class)
+    private static final FileFilter projectFilter = new ProjectsFilter()
 
     @Override
     boolean isSupported(PluginAware target) {
@@ -103,7 +102,7 @@ class SettingsPluginInitializer implements Initializer<Settings> {
                 return false
             }
             String[] subfiles = meta.list()
-            def manifestFile = subfiles.find {
+            String manifestFile = subfiles.find {
                 it.equalsIgnoreCase(ManifestUtils.MANIFEST_FILE_NAME)
             }
             return manifestFile != null

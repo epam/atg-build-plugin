@@ -20,8 +20,9 @@ package com.epam.atg.gradle.utils
  * @author Aleksei Prokofev
  */
 class OsUtils {
+
   static boolean isWindows() {
-    def os = System.getProperty('os.name').toLowerCase()
+    String os = System.getProperty('os.name').toLowerCase()
     return os.contains('windows')
   }
 }

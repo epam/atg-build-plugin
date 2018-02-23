@@ -23,7 +23,8 @@ import org.slf4j.LoggerFactory
 import java.util.jar.Manifest
 
 class ATGModule {
-    private static Logger LOGGER = LoggerFactory.getLogger(ATGModule.class)
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ATGModule.class)
 
     private String name
     private File moduleLocation
@@ -60,7 +61,7 @@ class ATGModule {
     private void initializeClassPath(Manifest manifest) {
         classPathEntries = ManifestUtils.getATGModuleClassPath(manifest)
         classPathDependencyFiles = new ArrayList<>()
-        String moduleAbsolutePath = moduleLocation.getAbsolutePath()
+        String moduleAbsolutePath = moduleLocation.absolutePath
         LOGGER.debug("initializeClassPath -> moduleAbsolutePath: {}", moduleAbsolutePath)
         for (String classPathEntry : classPathEntries) {
             File classPathDependencyFile = new File(moduleAbsolutePath + File.separator + classPathEntry)

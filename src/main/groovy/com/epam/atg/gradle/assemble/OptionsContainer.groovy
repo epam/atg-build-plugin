@@ -1,11 +1,11 @@
-/**
- * Copyright 2012 Spindrift
+/*
+ * Copyright 2017 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,179 +24,201 @@ import org.gradle.util.CollectionUtils
 @AutoClone
 class OptionsContainer {
 
-  private boolean pack = false
+    boolean pack = false
 
-  void pack(boolean pack) {
-    this.pack = pack
-  }
-  private boolean standalone = false
+    void pack(boolean pack) {
+        this.pack = pack
+    }
 
-  void standalone(boolean standalone) {
-    this.standalone = standalone
-  }
-  private boolean overwrite = false
+    boolean standalone = false
 
-  void overwrite(boolean overwrite) {
-    this.overwrite = overwrite
-  }
-  private boolean collapseClassPath = false
+    void standalone(boolean standalone) {
+        this.standalone = standalone
+    }
 
-  void collapseClassPath(boolean collapseClassPath) {
-    this.collapseClassPath = collapseClassPath
-  }
-  private List<String> collapseExcludeDirs = []
+    boolean overwrite = false
 
-  List<String> getCollapseExcludeDirs() {
-    CollectionUtils.stringize(this.collapseExcludeDirs)
-  }
+    void overwrite(boolean overwrite) {
+        this.overwrite = overwrite
+    }
 
-  void setCollapseExcludeDirs(Object... args) {
-    this.collapseExcludeDirs.clear()
-    this.collapseExcludeDirs.addAll(args as List)
-  }
+    boolean collapseClassPath = false
 
-  void collapseExcludeDirs(Object... args) {
-    this.collapseExcludeDirs.addAll(args as List)
-  }
-  private List<String> collapseExcludeFiles = []
+    void collapseClassPath(boolean collapseClassPath) {
+        this.collapseClassPath = collapseClassPath
+    }
 
-  List<String> getCollapseExcludeFiles() {
-    CollectionUtils.stringize(this.collapseExcludeFiles)
-  }
+    private List<String> collapseExcludeDirs = []
 
-  void setCollapseExcludeFiles(Object... args) {
-    this.collapseExcludeFiles.clear()
-    this.collapseExcludeFiles.addAll(args as List)
-  }
+    List<String> getCollapseExcludeDirs() {
+        CollectionUtils.stringize(this.collapseExcludeDirs)
+    }
 
-  void collapseExcludeFiles(Object... args) {
-    this.collapseExcludeFiles.addAll(args as List)
-  }
-  private boolean jarDirs = false
+    void setCollapseExcludeDirs(String... args) {
+        this.collapseExcludeDirs.clear()
+        this.collapseExcludeDirs.addAll(args as List)
+    }
 
-  void jarDirs(boolean jarDirs) {
-    this.jarDirs = jarDirs
-  }
-  private boolean verbose = false
+    void collapseExcludeDirs(String... args) {
+        this.collapseExcludeDirs.addAll(args as List)
+    }
 
-  void verbose(boolean verbose) {
-    this.verbose = verbose
-  }
-  private boolean classesOnly = false
+    private List<String> collapseExcludeFiles = []
 
-  void classesOnly(boolean classesOnly) {
-    this.classesOnly = classesOnly
-  }
-  private String displayName
+    List<String> getCollapseExcludeFiles() {
+        CollectionUtils.stringize(this.collapseExcludeFiles)
+    }
 
-  void displayName(String displayName) {
-    this.displayName = displayName
-  }
-  private String server
+    void setCollapseExcludeFiles(String... args) {
+        this.collapseExcludeFiles.clear()
+        this.collapseExcludeFiles.addAll(args as List)
+    }
 
-  void server(String server) {
-    this.server = server
-  }
-  private boolean liveConfig = false
+    void collapseExcludeFiles(String... args) {
+        this.collapseExcludeFiles.addAll(args as List)
+    }
 
-  void liveConfig(boolean liveConfig) {
-    this.liveConfig = liveConfig
-  }
-  private boolean distributable = false
+    boolean jarDirs = false
 
-  void distributable(boolean distributable) {
-    this.distributable = distributable
-  }
-  private List<String> addEarFile = []
+    void jarDirs(boolean jarDirs) {
+        this.jarDirs = jarDirs
+    }
 
-  List<String> getAddEarFile() {
-    CollectionUtils.stringize(this.addEarFile)
-  }
+    boolean verbose = false
 
-  void setAddEarFile(Object... args) {
-    this.addEarFile.clear()
-    this.addEarFile.addAll(args as List)
-  }
+    void verbose(boolean verbose) {
+        this.verbose = verbose
+    }
 
-  void addEarFile(Object... args) {
-    this.addEarFile.addAll(args as List)
-  }
-  private String contextRootsFile
+    boolean classesOnly = false
 
-  void contextRootsFile(String contextRootsFile) {
-    this.contextRootsFile = contextRootsFile
-  }
-  private String dynamoEnvProperties
+    void classesOnly(boolean classesOnly) {
+        this.classesOnly = classesOnly
+    }
 
-  void dynamoEnvProperties(String dynamoEnvProperties) {
-    this.dynamoEnvProperties = dynamoEnvProperties
-  }
-  private boolean excludeAccResources = false
+    String displayName
 
-  void excludeAccResources(boolean excludeAccResources) {
-    this.excludeAccResources = excludeAccResources
-  }
-  private boolean noFix = false
+    void displayName(String displayName) {
+        this.displayName = displayName
+    }
 
-  void noFix(boolean noFix) {
-    this.noFix = noFix
-  }
-  private List<String> prependJars = []
+    String server
 
-  List<String> getPrependJars() {
-    CollectionUtils.stringize(this.prependJars)
-  }
+    void server(String server) {
+        this.server = server
+    }
 
-  void setPrependJars(Object... args) {
-    this.prependJars.clear()
-    this.prependJars.addAll(args as List)
-  }
+    boolean liveConfig = false
 
-  void prependJars(Object... args) {
-    this.prependJars.addAll(args as List)
-  }
-  private boolean runInPlace = false
+    void liveConfig(boolean liveConfig) {
+        this.liveConfig = liveConfig
+    }
 
-  void runInPlace(boolean runInPlace) {
-    this.runInPlace = runInPlace
-  }
-  private boolean tomcat = false
+    boolean distributable = false
 
-  void tomcat(boolean tomcat) {
-    this.tomcat = tomcat
-  }
-  private String tomcatAdditionalResourcesFile
+    void distributable(boolean distributable) {
+        this.distributable = distributable
+    }
 
-  void tomcatAdditionalResourcesFile(String tomcatAdditionalResourcesFile) {
-    this.tomcatAdditionalResourcesFile = tomcatAdditionalResourcesFile
-  }
-  private String tomcatInitialResourcesFile
+    private List<String> addEarFile = []
 
-  void tomcatInitialResourcesFile(String tomcatInitialResourcesFile) {
-    this.tomcatInitialResourcesFile = tomcatInitialResourcesFile
-  }
-  private boolean tomcatUseJotm = false
+    List<String> getAddEarFile() {
+        CollectionUtils.stringize(this.addEarFile)
+    }
 
-  void tomcatUseJotm(boolean tomcatUseJotm) {
-    this.tomcatUseJotm = tomcatUseJotm
-  }
-  private boolean tomcatUseAtomikos = false
+    void setAddEarFile(String... args) {
+        this.addEarFile.clear()
+        this.addEarFile.addAll(args as List)
+    }
 
-  void tomcatUseAtomikos(boolean tomcatUseAtomikos) {
-    this.tomcatUseAtomikos = tomcatUseAtomikos
-  }
-  private boolean jboss = false
+    void addEarFile(String... args) {
+        this.addEarFile.addAll(args as List)
+    }
 
-  void jboss(boolean jboss) {
-    this.jboss = jboss
-  }
+    String contextRootsFile
 
-  private String extra = null
+    void contextRootsFile(String contextRootsFile) {
+        this.contextRootsFile = contextRootsFile
+    }
 
-  void extra(String extra) {
-    this.extra = extra
-  }
+    String dynamoEnvProperties
+
+    void dynamoEnvProperties(String dynamoEnvProperties) {
+        this.dynamoEnvProperties = dynamoEnvProperties
+    }
+
+    boolean excludeAccResources = false
+
+    void excludeAccResources(boolean excludeAccResources) {
+        this.excludeAccResources = excludeAccResources
+    }
+
+    boolean noFix = false
+
+    void noFix(boolean noFix) {
+        this.noFix = noFix
+    }
+
+    private List<String> prependJars = []
+
+    List<String> getPrependJars() {
+        CollectionUtils.stringize(this.prependJars)
+    }
+
+    void setPrependJars(String... args) {
+        this.prependJars.clear()
+        this.prependJars.addAll(args as List)
+    }
+
+    void prependJars(String... args) {
+        this.prependJars.addAll(args as List)
+    }
+
+    boolean runInPlace = false
+
+    void runInPlace(boolean runInPlace) {
+        this.runInPlace = runInPlace
+    }
+
+    boolean tomcat = false
+
+    void tomcat(boolean tomcat) {
+        this.tomcat = tomcat
+    }
+
+    String tomcatAdditionalResourcesFile
+
+    void tomcatAdditionalResourcesFile(String tomcatAdditionalResourcesFile) {
+        this.tomcatAdditionalResourcesFile = tomcatAdditionalResourcesFile
+    }
+
+    String tomcatInitialResourcesFile
+
+    void tomcatInitialResourcesFile(String tomcatInitialResourcesFile) {
+        this.tomcatInitialResourcesFile = tomcatInitialResourcesFile
+    }
+
+    boolean tomcatUseJotm = false
+
+    void tomcatUseJotm(boolean tomcatUseJotm) {
+        this.tomcatUseJotm = tomcatUseJotm
+    }
+
+    boolean tomcatUseAtomikos = false
+
+    void tomcatUseAtomikos(boolean tomcatUseAtomikos) {
+        this.tomcatUseAtomikos = tomcatUseAtomikos
+    }
+
+    boolean jboss = false
+
+    void jboss(boolean jboss) {
+        this.jboss = jboss
+    }
+
+    String extra = null
+
+    void extra(String extra) {
+        this.extra = extra
+    }
 }
-
-
-

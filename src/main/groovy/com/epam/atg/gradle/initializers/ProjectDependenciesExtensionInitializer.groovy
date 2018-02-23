@@ -23,6 +23,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 
 class ProjectDependenciesExtensionInitializer extends AbstractProjectPluginInitializer {
+
     @Override
     void apply(Project project) {
         prepareAtgDependenciesByType(project, ATGPluginConstants.API_DEPENDENCIES)

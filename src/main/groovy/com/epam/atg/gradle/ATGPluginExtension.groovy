@@ -19,5 +19,4 @@ package com.epam.atg.gradle
 class ATGPluginExtension {
 
     File dependenciesTreeOutputFile
-
 }

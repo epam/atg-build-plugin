@@ -17,6 +17,7 @@
 package com.epam.atg.gradle
 
 class ATGPluginConstants {
+
     static final String ATG_ROOT_PROJECTS = 'atgRootProjects'
 
     static final String PROJECT_ATG_ROOT_PROPERTY = 'atgRoot'

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 
 class ATGDependenciesResolver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(getClass())
+    private static final Logger LOGGER = LoggerFactory.getLogger(ATGDependenciesResolver.class)
 
     void defineDependencies(ATGGradleProject atgGradleProject) {
         addProjectClassPathDependencies(atgGradleProject)
@@ -37,15 +37,15 @@ class ATGDependenciesResolver {
 
     private static void addProjectClassPathDependencies(ATGGradleProject atgGradleProject) {
         List<File> filesToExclude = new ArrayList<>()
-        filesToExclude.add(atgGradleProject.getProjectJarArchive())
-        filesToExclude.add(atgGradleProject.getProjectResources())
+        filesToExclude.add(atgGradleProject.projectJarArchive)
+        filesToExclude.add(atgGradleProject.projectResources)
         ConfigurableFileCollection toExcludeFileCollection = atgGradleProject.project.files(filesToExclude.toArray())
         addModuleClassPathDependencies(atgGradleProject.project, atgGradleProject.atgProjectModule, toExcludeFileCollection)
     }
 
     private void addProjectRequiredModulesDependencies(ATGGradleProject atgGradleProject) {
         atgGradleProject.clearModuleDependencyMarkers()
-        List<String> requiredModules = atgGradleProject.atgProjectModule.getRequiredModules()
+        List<String> requiredModules = atgGradleProject.atgProjectModule.requiredModules
         LOGGER.info('{} has the following required modules: {}', atgGradleProject, requiredModules)
         addDependencies(atgGradleProject, requiredModules)
     }
@@ -77,7 +77,7 @@ class ATGDependenciesResolver {
         } else {
             addATGModuleDependency(atgGradleProject, atgModule)
         }
-        atgGradleProject.markAddedDependency(atgModule.getName())
+        atgGradleProject.markAddedDependency(atgModule.name)
     }
 
     private void addATGModuleDependency(ATGGradleProject atgGradleProject, ATGModule atgModule) {
@@ -86,14 +86,14 @@ class ATGDependenciesResolver {
     }
 
     private static void addATGProjectModuleDependency(ATGGradleProject atgGradleProject, ATGProjectModule atgProjectModule) {
-        Project projectDependency = atgProjectModule.getProject()
+        Project projectDependency = atgProjectModule.project
         Project targetProject = atgGradleProject.project
         LOGGER.debug('Add atg {} module to {}', projectDependency, targetProject)
         targetProject.dependencies.add(ATGPluginConstants.COMPILE_DEPENDENCIES, projectDependency)
     }
 
     private static void addModuleClassPathDependencies(Project project, ATGModule module, FileCollection filesToExclude) {
-        List<File> entries = module.getClassPathDependencies()
+        List<File> entries = module.classPathDependencies
         LOGGER.debug('Add classpath dependencies {} from {} module to {}', entries, module, project)
         FileCollection artifacts = project.files(entries.toArray())
         if (filesToExclude != null)
@@ -103,7 +103,7 @@ class ATGDependenciesResolver {
     }
 
     private void addModuleRequiredDependencies(ATGGradleProject atgGradleProject, ATGModule atgModule) {
-        List<String> modules = atgModule.getRequiredModules()
+        List<String> modules = atgModule.requiredModules
         LOGGER.debug('Add modules required module dependencies {}', modules)
         addDependencies(atgGradleProject, modules)
     }

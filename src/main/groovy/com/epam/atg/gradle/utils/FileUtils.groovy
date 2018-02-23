@@ -17,14 +17,15 @@
 package com.epam.atg.gradle.utils
 
 class FileUtils {
+
     static void createLink(File link, File existingFile) {
         ProcessBuilder processBuilder
         if(OsUtils.isWindows()) {
-            def extraFlag = existingFile.isDirectory() ? '/J' : ''
-            def command = "mklink $extraFlag \"$link.absolutePath\" \"$existingFile.absolutePath\""
+            String extraFlag = existingFile.isDirectory() ? '/J' : ''
+            String command = "mklink $extraFlag \"$link.absolutePath\" \"$existingFile.absolutePath\""
             processBuilder = new ProcessBuilder('cmd.exe', '/C', command)
         } else {
-            def command = "ln -s \"$existingFile.absolutePath\" \"$link.absolutePath\""
+            String command = "ln -s \"$existingFile.absolutePath\" \"$link.absolutePath\""
             processBuilder = new ProcessBuilder('/bin/bash', '-c', command)
         }
         Process p = processBuilder.start()

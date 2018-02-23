@@ -30,7 +30,7 @@ import java.util.jar.Manifest
 
 class ATGRepositoryImpl implements ATGRepository {
 
-    private static Logger LOGGER = LoggerFactory.getLogger('ATGRepository')
+    private static final Logger LOGGER = LoggerFactory.getLogger(ATGRepositoryImpl.class)
 
     private File atgRoot
     private Map<String, ATGModule> modulesMap
@@ -52,7 +52,7 @@ class ATGRepositoryImpl implements ATGRepository {
             if (manifest != null) {
                 String installUnit = ManifestUtils.getInstalledUnit(manifest)
                 if (installUnit) {
-                    mapInstallUnitToModuleFolder(installUnit, dir.getAbsolutePath())
+                    mapInstallUnitToModuleFolder(installUnit, dir.absolutePath)
                 }
             }
         }
@@ -71,7 +71,7 @@ class ATGRepositoryImpl implements ATGRepository {
     }
 
     private void addModule(ATGModule module) {
-        modulesMap.put(module.getName(), module)
+        modulesMap.put(module.name, module)
     }
 
     private ATGModule findModule(String module) {
@@ -151,7 +151,7 @@ class ATGRepositoryImpl implements ATGRepository {
                 String installedModulePath = getInstalledModuleRelativeFolder(rootModuleName)
                 moduleLocation = new File(installedModulePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
             } else {
-                moduleLocation = new File(atgRoot.getAbsolutePath() + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
+                moduleLocation = new File(atgRoot.absolutePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
             }
             if (moduleLocation.exists()) {
                 module = new ATGModule(moduleName, moduleLocation)

@@ -27,8 +27,7 @@ import org.slf4j.LoggerFactory
 
 class RootProjectPluginInitializer extends AbstractProjectPluginInitializer {
 
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(getClass())
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootProjectPluginInitializer.class)
 
     @Override
     protected boolean isSupportedProject(Project project) {
@@ -66,8 +65,8 @@ class RootProjectPluginInitializer extends AbstractProjectPluginInitializer {
         }
         Map<String, String> projectNameToModuleName = new HashMap<>()
         for (String item in rootProjectsNames.split(',')) {
-            final String[] parts = item.trim().split("=>")
-            final String projectName = parts[0].trim()
+            String[] parts = item.trim().split("=>")
+            String projectName = parts[0].trim()
             Project atgRootProject
             try {
                 atgRootProject = project.project(projectName)
@@ -75,7 +74,7 @@ class RootProjectPluginInitializer extends AbstractProjectPluginInitializer {
                 LOGGER.error('Unable to find project with name {}', projectName)
                 continue
             }
-            final String moduleName = parts.length == 2 ? parts[1].trim() : atgRootProject.projectDir.name
+            String moduleName = parts.length == 2 ? parts[1].trim() : atgRootProject.projectDir.name
             projectNameToModuleName.put(projectName, moduleName)
         }
 

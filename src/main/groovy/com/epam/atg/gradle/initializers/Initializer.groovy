@@ -19,6 +19,7 @@ package com.epam.atg.gradle.initializers
 import org.gradle.api.plugins.PluginAware
 
 interface Initializer<T extends PluginAware> {
+
     boolean isSupported(PluginAware target)
     void apply(T target)
 }
