@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+ATG-Product: ModuleB
+ATG-Client-Class-Path: lib/classes.jar
+ATG-Class-Path: lib/classes.jar
+ATG-Config-Path: config
+ATG-Required: RootModule.ModuleA
+Name: lib/classes.jar
+ATG-Client-Update-File: true
