@@ -16,9 +16,7 @@
 
 buildscript {
     repositories {
-        maven {
-            url "https://oss.sonatype.org/content/groups/staging"
-        }
+        mavenCentral()
     }
     dependencies {
 //        classpath files("../../build/libs/atg-build-plugin-${atgPluginVersion}.jar")
