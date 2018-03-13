@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-ATG-Product: ModuleB
+ATG-Product: RootModule.ModuleB
 ATG-Client-Class-Path: lib/classes.jar
 ATG-Class-Path: lib/classes.jar
 ATG-Config-Path: config

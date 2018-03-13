@@ -17,10 +17,9 @@
 buildscript {
     repositories {
         maven {
-            url = 'https://touch.epm-esp.projects.epam.com/maven/esp/'
+            url "https://oss.sonatype.org/content/groups/staging"
         }
     }
-
     dependencies {
 //        classpath files("../../build/libs/atg-build-plugin-${atgPluginVersion}.jar")
         classpath "com.epam.dep.esp:atg-build-plugin:${atgPluginVersion}"
@@ -81,7 +80,7 @@ subprojects {
 }
 
 task buildEAR(type: RunAssembler) {
-    modules = ['DAS', 'ModuleA']
+    modules = ['DAS', 'RootModule.ModuleA']
     earName = 'ModuleAServer'
     cleanOnBuild = project.hasProperty("cleanOnBuild")
     options {
