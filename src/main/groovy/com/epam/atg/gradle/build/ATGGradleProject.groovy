@@ -61,6 +61,12 @@ class ATGGradleProject {
         return new File(project.libsDirName + File.separator + project.jar.archiveName as String)
     }
 
+    List<File> getProjectSourceSetsOutputFiles() {
+        def outputFiles = []
+        project.sourceSets.each { outputFiles.addAll(it.output.files) }
+        return outputFiles
+    }
+
     File getProjectResources() {
         return new File(project.libsDirName + File.separator + RESOURCES_JAR_FILENAME as String)
     }

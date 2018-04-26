@@ -39,6 +39,7 @@ class ATGDependenciesResolver {
         List<File> filesToExclude = new ArrayList<>()
         filesToExclude.add(atgGradleProject.projectJarArchive)
         filesToExclude.add(atgGradleProject.projectResources)
+        filesToExclude.addAll(atgGradleProject.projectSourceSetsOutputFiles)
         ConfigurableFileCollection toExcludeFileCollection = atgGradleProject.project.files(filesToExclude.toArray())
         addModuleClassPathDependencies(atgGradleProject.project, atgGradleProject.atgProjectModule, toExcludeFileCollection)
     }
