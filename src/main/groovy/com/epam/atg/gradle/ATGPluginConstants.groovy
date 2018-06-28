@@ -24,7 +24,7 @@ class ATGPluginConstants {
     static final String PROJECT_ATG_REPOSITORY_PROPERTY = 'atgRepository'
     static final String PROJECT_SETTINGS_EXCLUDE_MODULES = 'excludedAtgProjects'
 
-    static final String ATG_RUN_ASSEMBLER_ABSOLUTE_PATH = 'runAssemblerDir'
+    static final String ATG_RUN_ASSEMBLER_ABSOLUTE_PATH = 'runAssemblerPath'
 
     static final String ATG_TASK_GROUP = 'atg'
     static final String ATG_PLUGIN_EXTENSION_NAME = 'atg'
