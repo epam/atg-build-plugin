@@ -22,6 +22,7 @@ import com.epam.atg.gradle.utils.ProjectUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils
 
 /**
  * ATG Assembler EAR
@@ -74,7 +75,7 @@ class AssembleATGTask extends DefaultTask {
 
         project.ant.taskdef(name: 'assembleEAR',
                 classname: 'atg.appassembly.ant.CreateUnpackedEarTask',
-                classpath: "$dynamoRoot/home/lib/assembler.jar")
+                classpath: "${getRunAssemblerPath()}")
 
         Map assemblerEARTaskParameters = [
                 //required
@@ -117,6 +118,15 @@ class AssembleATGTask extends DefaultTask {
                 link.delete()
                 project.logger.info('Removed temporary link {}', link)
             }
+        }
+    }
+
+    private String getRunAssemblerPath() {
+        String runAssemblerDir = project.property(ATGPluginConstants.ATG_RUN_ASSEMBLER_ABSOLUTE_PATH)
+        if (StringUtils.isNotEmpty(runAssemblerDir)) {
+            return runAssemblerDir
+        } else {
+            return "$dynamoRoot/home/lib/assembler.jar"
         }
     }
 }
