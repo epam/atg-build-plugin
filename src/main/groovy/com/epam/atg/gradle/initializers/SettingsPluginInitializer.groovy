@@ -20,6 +20,7 @@ import com.epam.atg.gradle.ATGPluginConstants
 import com.epam.atg.gradle.build.utils.ManifestUtils
 import org.gradle.api.initialization.Settings
 import org.gradle.api.plugins.PluginAware
+import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -66,7 +67,7 @@ class SettingsPluginInitializer implements Initializer<Settings> {
 
     private static String getExcludedAtgProjects(Settings settings) {
         String excludedAtgProjects = settings?.properties[EXTENSIONS_PROPERTY]?.properties[EXTRA_PROPERTIES_PROPERTY]?.properties[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String
-        if (excludedAtgProjects) {
+        if (StringUtils.isEmpty(excludedAtgProjects)) {
             excludedAtgProjects = settings?.properties[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES]
         }
         return excludedAtgProjects
