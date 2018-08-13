@@ -27,8 +27,6 @@ class SettingsPluginInitializer implements Initializer<Settings> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingsPluginInitializer.class)
     private static final FileFilter projectFilter = new ProjectsFilter()
-    public static final String EXTENSIONS_PROPERTY = 'extensions'
-    public static final String EXTRA_PROPERTIES_PROPERTY = 'extraProperties'
 
     @Override
     boolean isSupported(PluginAware target) {
@@ -54,7 +52,7 @@ class SettingsPluginInitializer implements Initializer<Settings> {
 
     static void includeProjects(Settings settings, List<String> projectNames) {
         List<String> excludedProjects = settings.hasProperty(ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES) ?
-                extractExcludedProjects(getExcludedAtgProjects(settings)) : []
+                extractExcludedProjects(settings[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String) : []
         LOGGER.debug('excludedProjects = {}', excludedProjects)
         for (String projectName : projectNames) {
             if (!excludedProjects.contains(projectName) && !settings.findProject(projectName)) {
@@ -62,17 +60,6 @@ class SettingsPluginInitializer implements Initializer<Settings> {
                 LOGGER.debug('include project {}', projectName)
             }
         }
-    }
-
-    private static String getExcludedAtgProjects(Settings settings) {
-        String excludedAtgProjects
-        try {
-            excludedAtgProjects = settings?.properties[EXTENSIONS_PROPERTY]?.properties[EXTRA_PROPERTIES_PROPERTY]?.properties[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String
-        } catch (MissingPropertyException e) {
-            excludedAtgProjects = settings.properties[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String
-            LOGGER.debug('using default excluded atg projects property source')
-        }
-        return excludedAtgProjects
     }
 
     private static List<String> extractExcludedProjects(String value) {
