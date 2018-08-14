@@ -18,13 +18,10 @@ Add build script dependencies to your project
 ```
 buildscript {
     repositories {
-        maven {
-            url = 'https://touch.epm-esp.projects.epam.com/maven/esp/'
-        }
+        mavenCentral()
     }
-
     dependencies {
-        classpath 'com.epam.dep.esp:atg-build-plugin:1.1'
+        classpath 'com.epam.dep.esp:atg-build-plugin:1.2'
     }
 }
 ```
