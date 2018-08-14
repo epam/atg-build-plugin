@@ -16,7 +16,7 @@
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
-apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 dependencies {
     compile gradleApi()
@@ -29,38 +29,79 @@ repositories {
 
 targetCompatibility = JavaVersion.VERSION_1_6
 
-publishing {
-
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            credentials {
-                username project.getProperties().get("user")
-                password project.getProperties().get("passwd")
-            }
-            url "${mvnRepo}/${project.getProperties().get('repo')}"
-        }
-    }
-
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('repository'))
-        }
-    }
-}
-
 jar {
     manifest {
         attributes 'Implementation-Title': "${rootProject.name}",
                 'Implementation-Version': version,
                 'Implementation-Vendor': 'EPAM SYSTEMS INC'
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: nexusUsername, password: nexusPassword)
+            }
+
+            pom.project {
+                packaging 'jar'
+                name 'atg-build-plugin'
+                description 'ATG Build Plugin for gradle'
+                url 'https://github.com/epam/atg-build-plugin'
+
+                scm {
+                    url 'https://github.com/epam/atg-build-plugin'
+                    connection 'scm:https://github.com/epam/atg-build-plugin.git'
+                    developerConnection 'scm:https://github.com/epam/atg-build-plugin.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'dmitrykolin'
+                        name 'Dzmitry Kolin'
+                        email 'kolin.dmitry@gmail.com'
+                    }
+                    developer {
+                        id 'prokofiev'
+                        name 'Aleksei Prokofev'
+                        email 'prokofiev.ad@yandex.ru'
+                    }
+                }
+            }
+        }
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
     }
 }

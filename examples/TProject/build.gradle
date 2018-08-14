@@ -1,0 +1,96 @@
+/*
+ * Copyright 2017 EPAM SYSTEMS INC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/groups/staging"
+        }
+    }
+    dependencies {
+//        classpath files("../../build/libs/atg-build-plugin-${atgPluginVersion}.jar")
+        classpath "com.epam.dep.esp:atg-build-plugin:${atgPluginVersion}"
+    }
+}
+
+apply plugin: 'atg'
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'atg'
+
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src']
+            }
+            resources {
+                srcDirs = []
+            }
+        }
+    }
+
+    // additional configuration for libs which will be copied into build/libs (will be part of ATG module)
+    configurations {
+        requiredLibs
+    }
+
+    libsDirName = projectDir.absolutePath + '/lib'
+    jar.archiveName = 'classes.jar'
+
+    clean.doFirst {
+        delete("$libsDirName/$project.jar.archiveName" )
+        configurations.requiredLibs.each {d ->
+            def lib = file("$libsDirName/$d.name")
+            if(lib.exists()) {
+                delete(lib)
+            }
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    /**
+     * Task for copy all project dependencies from compileLibs configuration into build/libs dir.
+     * It needs for runAssembler build correct ear.
+     */
+    task ('copyRequiredLibs', type: Copy) {
+        into libsDirName
+        from configurations.requiredLibs
+    }
+
+    // Cant use build.dependsOn because gradle call build task too late
+    processResources.dependsOn 'copyRequiredLibs'
+}
+
+task buildEAR(type: RunAssembler) {
+    modules = ['DAS', 'RootModule.ModuleA']
+    earName = 'ModuleAServer'
+    cleanOnBuild = project.hasProperty("cleanOnBuild")
+    options {
+        server = 'ModuleAServer'
+        standalone = project.hasProperty("standalone")
+        liveConfig = project.hasProperty("liveConfig")
+    }
+}
+
+// define clean task for root project because a java plugin is not appied for them
+task clean(type: Delete, group: 'build') {
+    delete  "$buildDir"
+}

@@ -1,4 +1,4 @@
-## ATG Build Plugin for gradle
+## ATG Build Plugin for gradle [![Build Status](https://travis-ci.org/epam/atg-build-plugin.svg?branch=master)](https://travis-ci.org/epam/atg-build-plugin)
 This plugin allows to populate gradle dependencies for ATG modules
 You could find test project `TProject` in examples directory
 
@@ -44,14 +44,8 @@ Allow to find atg modules and add it as sub projects automatically.
 In `settings.gradle`:
 ```
 buildscript {
-    repositories {
-        maven {
-            url = 'https://touch.epm-esp.projects.epam.com/maven/esp/'
-        }
-    }
-
     dependencies {
-        classpath 'com.epam.dep.esp:atg-build-plugin:1.1'
+        classpath 'com.epam.dep.esp:atg-build-plugin:1.2'
     }
 }
 //Optional exclude specific modules from search
