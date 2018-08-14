@@ -52,9 +52,9 @@ class SettingsPluginInitializer implements Initializer<Settings> {
 
     static void includeProjects(Settings settings, List<String> projectNames) {
         List<String> excludedProjects = settings.hasProperty(ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES) ?
-                extractExcludedProjects(settings.properties[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String) : []
+                extractExcludedProjects(settings[ATGPluginConstants.PROJECT_SETTINGS_EXCLUDE_MODULES] as String) : []
         LOGGER.debug('excludedProjects = {}', excludedProjects)
-        for(String projectName : projectNames) {
+        for (String projectName : projectNames) {
             if (!excludedProjects.contains(projectName) && !settings.findProject(projectName)) {
                 settings.include(projectName)
                 LOGGER.debug('include project {}', projectName)
