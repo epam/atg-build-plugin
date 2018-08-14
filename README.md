@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.epam.dep.esp:atg-build-plugin:1.2'
+        classpath 'com.epam.dep.esp:atg-build-plugin:1.3.1'
     }
 }
 ```
