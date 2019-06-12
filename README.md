@@ -2,7 +2,7 @@
 This plugin allows to populate gradle dependencies for ATG modules
 You could find test project `TProject` in examples directory
 
-#### Key features:
+
 --------------------------------------------------------
 * Resolves dependencies by ATG modules.
 * Auto discovers ATG modules in gradle project and add them as sub projects.
