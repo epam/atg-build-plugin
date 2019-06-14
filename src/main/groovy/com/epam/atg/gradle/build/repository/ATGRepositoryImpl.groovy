@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,13 +100,18 @@ class ATGRepositoryImpl implements ATGRepository {
         if (atgModule != null) {
             return atgModule
         }
-        atgModule = createModule(moduleName, project)
+        Project atgRootGradleProjectForModule = ProjectUtils.findAtgRootProjectForModule(moduleName, project)
+        if (atgRootGradleProjectForModule) {
+            atgModule = createCustomAtgModule(moduleName, atgRootGradleProjectForModule)
+        } else  {
+            atgModule = createOutOfTheBoxAtgModule(moduleName)
+        }
         if (atgModule == null) {
             LOGGER.warn('Could not find module {}', moduleName)
             return null
         }
         if(!atgModule.initialize()) {
-            LOGGER.warn('{} does not have manifest file and will be skipped.', project)
+            LOGGER.warn('{} atg module not valid and will be skipped.', project)
             return null
         }
         addModule(atgModule)
@@ -122,44 +127,50 @@ class ATGRepositoryImpl implements ATGRepository {
         return module.requiredModules.asImmutable()
     }
 
-    private ATGModule createModule(String moduleName, Project project) {
-        ATGModule module
-        File moduleLocation
-        Project atgRootProjectForModule = ProjectUtils.findAtgRootProjectForModule(moduleName, project)
-        if (atgRootProjectForModule) {
-            LOGGER.debug('Module {} is part of the {}', moduleName, atgRootProjectForModule)
-            File atgRootProjectDir = atgRootProjectForModule.projectDir
-            String atgRootModuleName = ProjectUtils.getAtgRootModuleName(atgRootProjectForModule)
-            String projectRelativeModuleName = ProjectUtils.getModuleProjectRelativeName(moduleName, atgRootModuleName)
-            String relativePath = ManifestUtils.convertModuleNameToRelativePath(projectRelativeModuleName)
-            moduleLocation = new File(atgRootProjectDir.absolutePath + File.separator + relativePath)
-            if (moduleLocation.exists()) {
-                Project moduleGradleProject = ProjectUtils.findModuleProject(moduleLocation, atgRootProjectForModule)
-                if (moduleGradleProject) {
-                    module = new ATGProjectModule(moduleName, moduleLocation, moduleGradleProject)
-                } else {
-                    LOGGER.debug('Project not found by location {}', moduleLocation)
-                    module = new ATGModule(moduleName, moduleLocation)
-                }
+    private ATGModule createCustomAtgModule(String moduleName, Project atgRootGradleProjectForModule) {
+        ATGModule module = null
+        LOGGER.debug('Module {} is part of the {}', moduleName, atgRootGradleProjectForModule)
+        File atgRootProjectDir = atgRootGradleProjectForModule.projectDir
+        String atgRootModuleName = ProjectUtils.getAtgRootModuleName(atgRootGradleProjectForModule)
+        String projectRelativeModuleName = ProjectUtils.getModuleProjectRelativeName(moduleName, atgRootModuleName)
+        String relativePath = ManifestUtils.convertModuleNameToRelativePath(projectRelativeModuleName)
+        File moduleLocation = new File(atgRootProjectDir.absolutePath + File.separator + relativePath)
+        if (moduleLocation.exists()) {
+            Project moduleGradleProject = ProjectUtils.findModuleProject(moduleLocation, atgRootGradleProjectForModule)
+            if (moduleGradleProject) {
+                module = new ATGProjectModule(moduleName, moduleLocation, moduleGradleProject)
             } else {
-                LOGGER.warn('Module location {} does not exist', moduleLocation)
-            }
-        } else {
-            LOGGER.debug('Module {} is ATG module', moduleName)
-            String rootModuleName = ManifestUtils.getRootModuleFromModuleName(moduleName)
-            if (isInstalledModule(rootModuleName)) {
-                String installedModulePath = getInstalledModuleRelativeFolder(rootModuleName)
-                moduleLocation = new File(installedModulePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
-            } else {
-                moduleLocation = new File(atgRoot.absolutePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
-            }
-            if (moduleLocation.exists()) {
+                LOGGER.debug('Project {} not handled by gradle', moduleLocation)
                 module = new ATGModule(moduleName, moduleLocation)
             }
+        } else {
+            LOGGER.warn('Module location {} does not exist', moduleLocation)
         }
         if (module == null) {
             LOGGER.warn('Module does not exist in location {}', moduleLocation)
         }
         return module
     }
+
+    private ATGModule createOutOfTheBoxAtgModule(String moduleName) {
+        ATGModule module = null
+        File moduleLocation
+        LOGGER.debug('Module {} is ATG module', moduleName)
+        String rootModuleName = ManifestUtils.getRootModuleFromModuleName(moduleName)
+        if (isInstalledModule(rootModuleName)) {
+            String installedModulePath = getInstalledModuleRelativeFolder(rootModuleName)
+            moduleLocation = new File(installedModulePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
+        } else {
+            moduleLocation = new File(atgRoot.absolutePath + File.separator + ManifestUtils.convertModuleNameToRelativePath(moduleName))
+        }
+        if (moduleLocation.exists()) {
+            module = new ATGModule(moduleName, moduleLocation)
+        }
+        if (module == null) {
+            LOGGER.warn('Module does not exist in location {}', moduleLocation)
+        }
+        return module
+    }
+
+
 }

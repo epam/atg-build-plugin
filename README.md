@@ -21,7 +21,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.epam.dep.esp:atg-build-plugin:1.3.1'
+        classpath 'com.epam.dep.esp:atg-build-plugin:1.4-SNAPSHOT'
     }
 }
 ```
@@ -132,42 +132,102 @@ Dependencies on modules must be defined as `ATG-Required: ModuleA ModuleB` inste
 ext.atgRootProjects = :ModuleA => NewNameA, :ModuleB => NameB
 ```
 In this case plugin will use map values as names of root modules.
- 
+
 #### Additional dependencies on ATG module 
 --------------------------------------------------------
-In some cases you may want to add additional dependency on ATG module without changing manifest file.
-The plugin makes it possible. Supported all most popular gradle configurations configurations:
+###### Since v1.4: added ATG-Required-If-Present support, 'atg' prefix was replaces with 'atgRequired' and 'atgRequiredIf'
+
+Add additional dependency on any ATG module(OOTB or gradle's) to classpath for build process and for manifest generation.
 
 
-Gradle configuration | Equals configuration working with ATG modules
--------------------- | -----------------
-api | atgApi
-apiElements | atgApiElements
-compile | atgCompile
-compileClasspath | atgCompileClasspath
-compileOnly | atgCompileOnly
-implementation | atgImplementation
-runtimeClasspath | atgRuntimeClasspath
-runtimeElements | atgRuntimeElements
-runtimeOnly | atgRuntimeOnly
-testCompile | atgTestCompile
-testCompileClasspath | atgTestCompileClasspath
-testCompileOnly | atgTestCompileOnly
-testImplementation | atgTestImplementation
-testRuntimeClasspath | atgTestRuntimeClasspath
+Gradle configuration | Manifest ATG-Required | Manifest ATG-Required-If-Present
+-------------------- | ----------------- | -----------------
+api | atgRequiredApi | atgRequiredIfApi
+apiElements | atgRequiredApiElements | atgRequiredIfApiElements
+compile | atgRequiredCompile | atgRequiredIfCompile
+compileClasspath | atgRequiredCompileClasspath | atgRequiredIfCompileClasspath
+compileOnly | atgRequiredCompileOnly | atgRequiredIfCompileOnly
+implementation | atgRequiredImplementation | atgRequiredIfImplementation
+runtimeClasspath | atgRequiredRuntimeClasspath | atgRequiredIfRuntimeClasspath
+runtimeElements | atgRequiredRuntimeElements | atgRequiredIfRuntimeElements
+runtimeOnly | atgRequiredRuntimeOnly | atgRequiredIfRuntimeOnly
+testCompile | atgRequiredTestCompile | atgRequiredIfTestCompile
+testCompileClasspath | atgRequiredTestCompileClasspath | atgRequiredIfTestCompileClasspath
+testCompileOnly | atgRequiredTestCompileOnly | atgRequiredIfTestCompileOnly
+testImplementation | atgRequiredTestImplementation | atgRequiredIfTestImplementation
+testRuntimeClasspath | atgRequiredTestRuntimeClasspath | atgRequiredIfTestRuntimeClasspath
 
-Examples:
+Example:
 ```
 dependencies {
-    atgCompile('DAF')
+    atgRequiredCompile('DAF')
+    atgRequiredCompile 'DCS'
+    atgRequiredCompile 'DCS.Endeca.Base', 'DAF.Endeca.Assembler'
 }
 ```
 
+  
+#### Scan ATG module manifest file
+--------------------------------------------------------
+Plugin scan manifests files of ATG modules to read information about used libs and other ATG modules.
+
+Use scanManifest to disable\enable manifest scan for gradle ATG modules, by default - enabled (scan always works for OOTB ATG module).
+
 ```
-dependencies {
-    atgTestCompile('DAF')
-}
+gradle.properties
+
+scanManifest=false
 ```
+
+Notice: don't recommended scanManifest=true with using in your project Manifest generation task.
+
+
+#### Manifest generation task
+--------------------------------------------------------
+
+Description coming soon.
+
+Example:
+
+```
+  atg {
+      dependenciesSinkPath 'build/dependencies'
+      manifestConfig {
+          manifestVersion '1.0'
+          atgConfigPath 'config'
+          generateAtgClientClassPath = true
+          generateIndividualResources = true
+          atgProduct = 'Module description'
+          atgJ2ee = 'j2ee-apps/qwerty'
+          atgEarModule = 'j2ee-apps/qwerty'
+          
+          skipGeneration false
+          override true
+          manifestFilePath 'META-INF/MANIFEST.MF'
+      }
+  }
+gradle generateAtgManifest
+```
+
+#### Dependencies sink task
+--------------------------------------------------------
+
+Description coming soon.
+
+Example:
+
+```
+  atg {
+      dependenciesSinkPath 'build/dependencies'
+  }
+  dependencies {
+      atgClassPath 'org.slf4j:slf4j-api:1.7.26'
+      atgClassPath 'org.slf4j:slf4j-simple:1.7.26'
+  }
+  
+gradle dependenciesSink
+```
+
 
 Link to gradle configurations documentation:
 ```

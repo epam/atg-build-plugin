@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,16 @@ package com.epam.atg.gradle
 class ATGPluginConstants {
 
     static final String ATG_ROOT_PROJECTS = 'atgRootProjects'
+    static final String ATG_SCAN_PROJECTS_MANIFEST = 'scanManifest'
+    static final String ATG_MODULE_NAME_PROP = "atgModuleName"
 
     static final String PROJECT_ATG_ROOT_PROPERTY = 'atgRoot'
     static final String PROJECT_ATG_REPOSITORY_PROPERTY = 'atgRepository'
     static final String PROJECT_SETTINGS_EXCLUDE_MODULES = 'excludedAtgProjects'
+
+    static final String MANIFEST_ATG_CLASSPATH= 'atgClassPath'
+    static final String MANIFEST_TASK = 'generateAtgManifest'
+    static final String DEPENDENCIES_SINK_TASK = 'dependenciesSink'
 
     static final String ATG_TASK_GROUP = 'atg'
     static final String ATG_PLUGIN_EXTENSION_NAME = 'atg'

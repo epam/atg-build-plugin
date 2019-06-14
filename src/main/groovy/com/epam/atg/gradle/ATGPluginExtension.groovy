@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,20 @@
 
 package com.epam.atg.gradle
 
-class ATGPluginExtension {
+import com.epam.atg.gradle.manifest.ManifestConfig
+import org.gradle.util.ConfigureUtil
+
+class ATGPluginExtension  {
 
     File dependenciesTreeOutputFile
+    ManifestConfig manifestConfig
+    String dependenciesSinkPath
+
+    void manifestConfig(Closure configuration) {
+        if (manifestConfig == null) {
+            manifestConfig = new ManifestConfig()
+        }
+        ConfigureUtil.configure(configuration, manifestConfig)
+    }
+
 }

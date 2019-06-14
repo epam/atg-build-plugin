@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ class ATGModule {
     private List<String> classPathEntries
     private List<File> classPathDependencyFiles
 
-    private List<String> requiredModules
+    private List<String> requiredModules = []
+    private List<String> requiredIfModules = []
 
     ATGModule(String moduleName, File moduleLocation) {
         if (moduleLocation == null || !moduleLocation.exists())
@@ -52,6 +53,7 @@ class ATGModule {
         }
         initializeClassPath(manifest)
         initializeRequiredModules(manifest)
+        initializeRequiredIfModules(manifest)
         initializeNameAndDescription(manifest)
         initializeConfigPath(manifest)
 
@@ -60,6 +62,8 @@ class ATGModule {
 
     private void initializeClassPath(Manifest manifest) {
         classPathEntries = ManifestUtils.getATGModuleClassPath(manifest)
+        //TODO find out if need such functionality
+        //classPathEntries.addAll(ManifestUtils.getATGIndividualResources(manifest))
         classPathDependencyFiles = new ArrayList<>()
         String moduleAbsolutePath = moduleLocation.absolutePath
         LOGGER.debug("initializeClassPath -> moduleAbsolutePath: {}", moduleAbsolutePath)
@@ -74,8 +78,13 @@ class ATGModule {
     }
 
     protected void initializeRequiredModules(Manifest manifest) {
-        requiredModules = ManifestUtils.getATGRequiredModules(manifest)
+        requiredModules.addAll(ManifestUtils.getATGRequiredModules(manifest))
     }
+
+    protected void initializeRequiredIfModules(Manifest manifest) {
+        requiredIfModules.addAll(ManifestUtils.getATGRequiredIfModules(manifest))
+    }
+
 
     private void initializeNameAndDescription(Manifest manifest) {
         description = ManifestUtils.getDescription(manifest)
@@ -98,7 +107,11 @@ class ATGModule {
     }
 
     List<String> getRequiredModules() {
-        return requiredModules.asImmutable()
+        return requiredModules
+    }
+
+    List<String> getRequiredIfModules() {
+        return requiredIfModules
     }
 
     String getName() {
