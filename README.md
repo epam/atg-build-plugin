@@ -1,6 +1,6 @@
 ## ATG Build Plugin for gradle [![Build Status](https://travis-ci.org/epam/atg-build-plugin.svg?branch=master)](https://travis-ci.org/epam/atg-build-plugin)
 This plugin allows to populate gradle dependencies for ATG modules
-You could find test project `TProject` in examples directory
+You could find test projects `TProject` and `TProjectManifestGeneration` in examples directory
 
 Tested with Gradle 4.10.3, Gradle 5.4.1
 
@@ -174,11 +174,11 @@ dependencies {
 --------------------------------------------------------
 Plugin scan manifests files of ATG modules to read information about used libs and other ATG modules.
 
-Use scanManifest to disable\enable manifest scan for gradle ATG modules, by default - enabled (scan always works for OOTB ATG module).
+Use `scanManifest` property to disable\enable manifest scan for gradle ATG modules, by default - enabled (scan always works for OOTB ATG module).
 
-`gradle.properties`
+`build.gradle`
 ```
-scanManifest=false
+project.ext.scanManifest=false
 ```
 
 Notice: don't recommended `scanManifest=true` with using in your project manifest generation task.
@@ -241,11 +241,11 @@ Example:
       manifestConfig {
           manifestVersion '1.0'
           atgConfigPath 'config'
-          generateAtgClientClassPath = true
-          generateIndividualResources = true
-          atgProduct = 'Module description'
-          atgJ2ee = 'j2ee-apps/web'
-          atgEarModule = 'j2ee-apps/eb
+          generateAtgClientClassPath true
+          generateIndividualResources true
+          atgProduct 'Module description'
+          atgJ2ee 'j2ee-apps/web'
+          atgEarModule 'j2ee-apps/eb
 
           skipGeneration false
           override true
