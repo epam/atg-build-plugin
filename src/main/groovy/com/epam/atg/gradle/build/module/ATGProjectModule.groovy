@@ -42,7 +42,6 @@ class ATGProjectModule extends ATGModule {
     boolean initialize() {
         def scanManifestProperty = project.findProperty(ATGPluginConstants.ATG_SCAN_PROJECTS_MANIFEST) as String
         boolean isScanManifest = scanManifestProperty == null || Boolean.valueOf(scanManifestProperty)
-        println(isScanManifest)
         if (isScanManifest) {
             scanManifest = super.initialize()
         }

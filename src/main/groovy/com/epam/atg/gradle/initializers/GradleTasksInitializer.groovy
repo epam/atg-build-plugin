@@ -83,7 +83,7 @@ class GradleTasksInitializer extends AbstractProjectPluginInitializer {
             manifestConfig.projectClassPath.add(jarArchive)
         } else {
             if (project.sourceSets.main.java.srcDirs.findAll { it.exists() }.size() > 0) {
-                def classesDir = (project.sourceSets.main.output.classesDir.absolutePath - project.projectDir.path).substring(1) as String
+                def classesDir = (project.sourceSets.main.java.outputDir.absolutePath - project.projectDir.path).substring(1) as String
                 manifestConfig.projectClassPath.add(classesDir)
             }
             if (project.sourceSets.main.resources.srcDirs.findAll { it.exists() }.size() > 0) {
