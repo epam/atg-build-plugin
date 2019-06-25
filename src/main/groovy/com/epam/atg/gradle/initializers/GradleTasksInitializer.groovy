@@ -34,7 +34,7 @@ class GradleTasksInitializer extends AbstractProjectPluginInitializer {
         project.ext.RunAssembler = RunAssemblerTask.class
 
 
-        def atgClassPath = project.configurations.create(ATGPluginConstants.MANIFEST_ATG_CLASSPATH)
+        project.configurations.create(ATGPluginConstants.MANIFEST_ATG_CLASSPATH)
 
         project.afterEvaluate {
             project.tasks.create(ATGPluginConstants.DEPENDENCIES_SINK_TASK, Copy.class, {  task ->
@@ -43,6 +43,7 @@ class GradleTasksInitializer extends AbstractProjectPluginInitializer {
                     println("dependenciesSinkPath: ${plugin.dependenciesSinkPath}")
                     plugin.dependenciesSinkPath != null
                 }
+                task.setGroup(ATGPluginConstants.ATG_TASK_GROUP)
                 task.from(project.configurations.atgClassPath)
                 task.into(plugin.dependenciesSinkPath)
                 task.doFirst {project.delete(plugin.dependenciesSinkPath)}

@@ -2,6 +2,8 @@
 This plugin allows to populate gradle dependencies for ATG modules
 You could find test project `TProject` in examples directory
 
+Tested with Gradle 4.10.3, Gradle 5.4.1
+
 #### Key features:
 --------------------------------------------------------
 * Resolves dependencies by ATG modules.
@@ -10,7 +12,9 @@ You could find test project `TProject` in examples directory
 * Prints ATG modules dependency tree.
 * Supports multiple root atg modules in one gradle project.
 * It is not necessary to put the project into ATG installation directory.
-* Supports adding dependencies on ATG module in gradle configuration. 
+* Supports adding dependencies on ATG module in gradle configuration.
+* Supports fetching all libs dependencies to specific folder.
+* Supports ATG manifest file generation based on your build.gradle configuration.
 
 #### Steps to apply plugin in your ATG project:
 --------------------------------------------------------
@@ -25,10 +29,9 @@ buildscript {
     }
 }
 ```
-Define ATG folder in root project properties in `build.grale`
+Define ATG folder in root project properties in `build.gradle`
 ```
-def atgRoot = '/ATG-ROOT/Location'
-ext.atgRoot = atgRoot
+ext.atgRoot = '/ATG-ROOT/Location'
 ```
 Apply ATG plugin to all required projects
 ```
@@ -133,7 +136,7 @@ ext.atgRootProjects = :ModuleA => NewNameA, :ModuleB => NameB
 ```
 In this case plugin will use map values as names of root modules.
 
-#### Additional dependencies on ATG module 
+#### Additional dependencies on ATG module
 --------------------------------------------------------
 ###### Since v1.4: added ATG-Required-If-Present support, 'atg' prefix was replaces with 'atgRequired' and 'atgRequiredIf'
 
@@ -166,53 +169,24 @@ dependencies {
 }
 ```
 
-  
+
 #### Scan ATG module manifest file
 --------------------------------------------------------
 Plugin scan manifests files of ATG modules to read information about used libs and other ATG modules.
 
 Use scanManifest to disable\enable manifest scan for gradle ATG modules, by default - enabled (scan always works for OOTB ATG module).
 
+`gradle.properties`
 ```
-gradle.properties
-
 scanManifest=false
 ```
 
-Notice: don't recommended scanManifest=true with using in your project Manifest generation task.
-
-
-#### Manifest generation task
---------------------------------------------------------
-
-Description coming soon.
-
-Example:
-
-```
-  atg {
-      dependenciesSinkPath 'build/dependencies'
-      manifestConfig {
-          manifestVersion '1.0'
-          atgConfigPath 'config'
-          generateAtgClientClassPath = true
-          generateIndividualResources = true
-          atgProduct = 'Module description'
-          atgJ2ee = 'j2ee-apps/qwerty'
-          atgEarModule = 'j2ee-apps/qwerty'
-          
-          skipGeneration false
-          override true
-          manifestFilePath 'META-INF/MANIFEST.MF'
-      }
-  }
-gradle generateAtgManifest
-```
+Notice: don't recommended `scanManifest=true` with using in your project manifest generation task.
 
 #### Dependencies sink task
 --------------------------------------------------------
 
-Description coming soon.
+Fetch all `atgClassPath` dependencies jar files to `dependenciesSinkPath` folder.
 
 Example:
 
@@ -224,12 +198,83 @@ Example:
       atgClassPath 'org.slf4j:slf4j-api:1.7.26'
       atgClassPath 'org.slf4j:slf4j-simple:1.7.26'
   }
-  
+
 gradle dependenciesSink
 ```
 
 
-Link to gradle configurations documentation:
+#### Manifest generation task
+--------------------------------------------------------
+
+Manifest generation task depends on following confings for your gradle project:
+`atg.dependenciesSinkPath` as String (default `null`, if not `null` - for each jar dependency file used its `dependenciesSink` task fetch path)
+`atg.manifestConfig` as com.epam.atg.gradle.manifest.ManifestConfig
+
+ManifestConfig field | Type | Description
+-------------------- | ----------------- | -----------------
+manifestVersion | String | as Manifest-Version
+antVersion | String | as Ant-Version
+atgJ2ee | String | as ATG-J2EE
+atgEarModule | String | as ATG-EAR-Module
+atgProduct | String | as ATG-Product
+createdBy | String | as Created-By
+individualResources | Set<IndividualResource> | set of IndividualResource: Name, ATG-Client-Update-File, ATG-Assembler-Import-File
+atgClientClassPath | Set<String> | as ATG-Client-Class-Path
+atgClassPath | Set<String> | as ATG-Class-Path
+atgRequired | Set<String> | as ATG-Required
+atgRequiredIfPresent | Set<String> | as ATG-Required-If-Present
+atgConfigPath | String | as ATG-Config-Path
+projectClassPath | Set<String> | autofilled depends on your sourceSets, used to fill individualResources, atgClientClassPath and atgClassPath
+generateAtgClientClassPath | boolean | default false, flag to fill `atgClientClassPath` field based on `projectClassPath` field
+generateIndividualResources | boolean | default false, flag to fill `individualResources` field based on `projectClassPath` field
+skipGeneration | boolean |  default `true`, override to `false` to enable atg manifest generation task for current gradle-atg module/project
+override | boolean | default `false`, allow generation task to regenerate manifest file, if it exists
+manifestFilePath | String | default "META-INF/MANIFEST.MF.new", recommended  override it to "META-INF/MANIFEST.MF"
+others | Map | add custom key -> value to generated manifest file
+
+
+Example:
+`build.gradle`
+```groovy
+  atg {
+      dependenciesSinkPath 'build/dependencies'
+      manifestConfig {
+          manifestVersion '1.0'
+          atgConfigPath 'config'
+          generateAtgClientClassPath = true
+          generateIndividualResources = true
+          atgProduct = 'Module description'
+          atgJ2ee = 'j2ee-apps/web'
+          atgEarModule = 'j2ee-apps/eb
+
+          skipGeneration false
+          override true
+          manifestFilePath 'META-INF/MANIFEST.MF'
+      }
+  }
+  dependencies {
+      atgRequiredCompile 'My.Gradle.Atg.Module', 'DCS.Endeca.Base', 'DAF.Endeca.Assembler'
+      atgClassPath 'org.slf4j:slf4j-simple:1.7.26' // includes org.slf4j:slf4j-api:1.7.26
+  }
+gradle generateAtgManifest
+```
+generated `MANIFEST.MF`
+```
+Manifest-Version: 1.0
+ATG-Config-Path: config
+ATG-Required: My.Gradle.Atg.Module DCS.Endeca.Base DAF.Endeca.Assembler
+ATG-Class-Path: build/libs/my_module_classes.jar, build/dependencies/slf4j-simple-1.7.26.jar, build/dependencies/slf4j-api-1.7.26.jar
+ATG-Client-Class-Path: build/libs/my_module_classes.jar
+ATG-Product: my product description
+ATG-J2EE: j2ee-apps/web
+ATG-EAR-Module: j2ee-apps/web
+
+Name: build/libs/my_module_classes.jar
+ATG-Client-Update-File: true
+```
+> Supports both `project.jar.enabled = false` and `project.jar.enabled = true`
+
+#### Link to gradle configurations documentation:
 ```
 https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph
 ```

@@ -39,7 +39,6 @@ class ManifestConfig implements Serializable {
     @Input boolean generateIndividualResources = false
     @Input boolean skipGeneration = true
     @Input boolean override = false
-    @Input @Optional String dependenciesSink
     @Input String manifestFilePath = "META-INF/MANIFEST.MF.new"
     @Input Map others = [:]
 
@@ -114,10 +113,6 @@ class ManifestConfig implements Serializable {
 
     void manifestFilePath(String manifestFilePath) {
         this.manifestFilePath = manifestFilePath
-    }
-
-    void dependenciesSink(String dependenciesSink) {
-        this.dependenciesSink = dependenciesSink
     }
 
     void others(Map others) {
