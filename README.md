@@ -1,5 +1,5 @@
 ## ATG Build Plugin for gradle [![Build Status](https://travis-ci.org/epam/atg-build-plugin.svg?branch=master)](https://travis-ci.org/epam/atg-build-plugin)
-This plugin allows to populate gradle dependencies for ATG modules
+This plugin allows to populate gradle dependencies for ATG modules\
 You could find test projects `TProject` and `TProjectManifestGeneration` in examples directory
 
 Tested with Gradle 4.10.3, Gradle 5.4.1
@@ -40,7 +40,7 @@ apply plugin: 'atg'
 
 #### ATG modules auto-discovering
 --------------------------------------------------------
-Allow to find atg modules and add it as sub projects automatically.
+Allow to find atg modules and add it as sub projects automatically.\
 In `settings.gradle`:
 ```
 buildscript {
@@ -117,8 +117,8 @@ extra | string | '' | this string will be added to end of options list
 
 #### Multiple ATG root modules support
 --------------------------------------------------------
-By default plugin uses root project name as single root atg module (placed in ATG dir)
-But you can configure multiple ATG root modules in build script through property "atgRootProjects"
+By default plugin uses root project name as single root atg module (placed in ATG dir)\
+But you can configure multiple ATG root modules in build script through property "atgRootProjects"\
 It receives comma separated gradle project names which will be used to detect ATG root modules
 
 Example `build.gradle`:
@@ -126,7 +126,7 @@ Example `build.gradle`:
 ext.atgRootProjects=:ModuleA,:ModuleB
 ```
 
-In this case plugin will detect two ATG root module: ModuleA and ModuleB.
+In this case plugin will detect two ATG root module: ModuleA and ModuleB.\
 Dependencies on modules must be defined as `ATG-Required: ModuleA ModuleB` instead of `ATG-Required: TProject.ModuleA TProject.ModuleB`
 
 ###### Since v1.2:
@@ -206,8 +206,8 @@ gradle dependenciesSink
 #### Manifest generation task
 --------------------------------------------------------
 
-Manifest generation task depends on following confings for your gradle project:
-`atg.dependenciesSinkPath` as String (default `null`, if not `null` - for each jar dependency file used its `dependenciesSink` task fetch path)
+Manifest generation task depends on following confings for your gradle project:\
+`atg.dependenciesSinkPath` as String (default `null`, if not `null` - for each jar dependency file used its `dependenciesSink` task fetch path)\
 `atg.manifestConfig` as com.epam.atg.gradle.manifest.ManifestConfig
 
 ManifestConfig field | Type | Description
@@ -218,13 +218,13 @@ atgJ2ee | String | as ATG-J2EE
 atgEarModule | String | as ATG-EAR-Module
 atgProduct | String | as ATG-Product
 createdBy | String | as Created-By
-individualResources | Set<IndividualResource> | set of IndividualResource: Name, ATG-Client-Update-File, ATG-Assembler-Import-File
-atgClientClassPath | Set<String> | as ATG-Client-Class-Path
-atgClassPath | Set<String> | as ATG-Class-Path
-atgRequired | Set<String> | as ATG-Required
-atgRequiredIfPresent | Set<String> | as ATG-Required-If-Present
+individualResources | Set\<IndividualResource\> | set of IndividualResource: Name, ATG-Client-Update-File, ATG-Assembler-Import-File
+atgClientClassPath | Set\<String\> | as ATG-Client-Class-Path
+atgClassPath | Set\<String\> | as ATG-Class-Path
+atgRequired | Set\<String\> | as ATG-Required
+atgRequiredIfPresent | Set\<String\> | as ATG-Required-If-Present
 atgConfigPath | String | as ATG-Config-Path
-projectClassPath | Set<String> | autofilled depends on your sourceSets, used to fill individualResources, atgClientClassPath and atgClassPath
+projectClassPath | Set\<String\> | autofilled depends on your sourceSets, used to fill individualResources, atgClientClassPath and atgClassPath
 generateAtgClientClassPath | boolean | default false, flag to fill `atgClientClassPath` field based on `projectClassPath` field
 generateIndividualResources | boolean | default false, flag to fill `individualResources` field based on `projectClassPath` field
 skipGeneration | boolean |  default `true`, override to `false` to enable atg manifest generation task for current gradle-atg module/project
