@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,11 @@ class ManifestUtils {
     public static final String MANIFEST_ATTRIBUTE_ATG_PRODUCT = 'ATG-Product'
     public static final String MANIFEST_ATTRIBUTE_ATG_CONFIG_PATH = 'ATG-Config-Path'
     public static final String MANIFEST_ATTRIBUTE_ATG_REQUIRED = 'ATG-Required'
+    public static final String MANIFEST_ATTRIBUTE_ATG_REQUIRED_IF = 'ATG-Required-If-Present'
     public static final String MANIFEST_ATTRIBUTE_ATG_CLASS_PATH = 'ATG-Class-Path'
     public static final String MANIFEST_ATTRIBUTE_ATG_INSTALL_UNIT = 'ATG-Install-Unit'
+    public static final String INDIVIDUAL_RESOURCE_ATG_ASSEMBLER_IMPORT_FILE = "ATG-Assembler-Import-File"
+
 
     public static final String ATG_MODULE_SEPARATOR = "."
     public static final String URI_PATH_SEPARATOR = "/"
@@ -74,9 +77,26 @@ class ManifestUtils {
         return getListValueFromManifestMainAttributes(manifest, MANIFEST_ATTRIBUTE_ATG_CLASS_PATH)
     }
 
+    static List<String> getATGIndividualResources(Manifest manifest) {
+        List<String> result = new ArrayList<>()
+        def entries = manifest.getEntries()
+        entries.each { resource, attributes ->
+            boolean isImport = Boolean.valueOf(attributes.getValue(INDIVIDUAL_RESOURCE_ATG_ASSEMBLER_IMPORT_FILE))
+            if (isImport) {
+                result.add(resource)
+            }
+        }
+        return result
+    }
+
     static List<String> getATGRequiredModules(Manifest manifest) {
         return getListValueFromManifestMainAttributes(manifest, MANIFEST_ATTRIBUTE_ATG_REQUIRED)
     }
+
+    static List<String> getATGRequiredIfModules(Manifest manifest) {
+        return getListValueFromManifestMainAttributes(manifest, MANIFEST_ATTRIBUTE_ATG_REQUIRED_IF)
+    }
+
 
     static List<String> getListValueFromManifestMainAttributes(Manifest manifest, String mainAttributeName) {
         String attributeStringValue = getMainAttribute(manifest, mainAttributeName)

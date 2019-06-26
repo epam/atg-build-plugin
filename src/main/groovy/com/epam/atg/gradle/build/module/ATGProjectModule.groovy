@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
 
 package com.epam.atg.gradle.build.module
 
+import com.epam.atg.gradle.ATGPluginConstants
 import org.gradle.api.Project
 
 class ATGProjectModule extends ATGModule {
 
     private final Project project
+    private boolean scanManifest
 
     ATGProjectModule(String moduleName, File moduleLocation, Project project) {
         super(moduleName, moduleLocation)
@@ -31,4 +33,17 @@ class ATGProjectModule extends ATGModule {
         return project
     }
 
+    boolean getScanManifest() {
+        return scanManifest
+    }
+
+    @Override
+    boolean initialize() {
+        def scanManifestProperty = project.findProperty(ATGPluginConstants.ATG_SCAN_PROJECTS_MANIFEST) as String
+        boolean isScanManifest = scanManifestProperty == null || Boolean.valueOf(scanManifestProperty)
+        if (isScanManifest) {
+            scanManifest = super.initialize()
+        }
+        return true
+    }
 }

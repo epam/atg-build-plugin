@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.epam.atg.gradle.ATGPlugin
 import com.epam.atg.gradle.ATGPluginConstants
 import com.epam.atg.gradle.ATGPluginExtension
 import com.epam.atg.gradle.build.ATGGradleProject
+import com.epam.atg.gradle.build.module.ATGModule
 import com.epam.atg.gradle.build.module.ATGProjectModule
 import com.epam.atg.gradle.build.utils.ATGDependenciesResolver
 import com.epam.atg.gradle.build.utils.ATGModuleTreePrinter
@@ -90,36 +91,36 @@ class ModulePluginInitializer extends AbstractProjectPluginInitializer {
         if (currentModule == null) {
             return
         }
+
+        atgGradleProject.project.ext.set(ATGPluginConstants.ATG_MODULE_NAME_PROP, currentModule.name)
         atgGradleProject.atgProjectModule = currentModule
 
-        defineProjectDescription(atgGradleProject)
-        addConfigResources(atgGradleProject)
-        addProjectDependencies(atgGradleProject)
+        if (currentModule.scanManifest) {
+            defineProjectDescription(atgGradleProject.atgProjectModule, atgGradleProject.project)
+            addConfigResources(atgGradleProject.atgProjectModule, atgGradleProject.project)
+            new ATGDependenciesResolver().defineDependencies(atgGradleProject)
+        }
         createPrintDependenciesTask(atgGradleProject)
     }
 
-    private static void addConfigResources(ATGGradleProject atgGradleProject) {
-        String atgConfigPath = atgGradleProject.atgProjectModule.atgConfigPath
-        if (!atgConfigPath || !atgGradleProject.project.file(atgConfigPath).isDirectory()) {
+    private static void addConfigResources(ATGModule atgModule, Project project) {
+        String atgConfigPath = atgModule.atgConfigPath
+        if (!atgConfigPath || !project.file(atgConfigPath).isDirectory()) {
             return
         }
         LOGGER.info('Add config resources {}', atgConfigPath)
         if (!atgConfigPath.startsWith('/')) {
             atgConfigPath = "/$atgConfigPath"
         }
-        SourceSet configSourceSet = atgGradleProject.project.sourceSets.maybeCreate(ATGPluginConstants.CONFIG_SOURCESET_NAME)
+        SourceSet configSourceSet = project.sourceSets.maybeCreate(ATGPluginConstants.CONFIG_SOURCESET_NAME)
         configSourceSet.resources.srcDirs(atgConfigPath)
     }
 
-    private static void addProjectDependencies(ATGGradleProject atgGradleProject) {
-        ATGDependenciesResolver atgDependenciesResolver = new ATGDependenciesResolver()
-        atgDependenciesResolver.defineDependencies(atgGradleProject)
-    }
 
-    private static void defineProjectDescription(ATGGradleProject atgGradleProject) {
-        String projectDescriptionOverride = atgGradleProject.atgProjectModule.description
-        if (!atgGradleProject.project.description && projectDescriptionOverride) {
-            atgGradleProject.project.setDescription(projectDescriptionOverride)
+    private static void defineProjectDescription(ATGModule atgModule, Project project) {
+        String projectDescriptionOverride = atgModule.description
+        if (!project.description && projectDescriptionOverride) {
+            project.setDescription(projectDescriptionOverride)
         }
     }
 

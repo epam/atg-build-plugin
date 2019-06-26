@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ subprojects {
     // Cant use build.dependsOn because gradle call build task too late
     processResources.dependsOn 'copyRequiredLibs'
 }
+
 
 task buildEAR(type: RunAssembler) {
     modules = ['DAS', 'RootModule.ModuleA']

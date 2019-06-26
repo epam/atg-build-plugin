@@ -14,22 +14,4 @@
  * limitations under the License.
  */
 
-package com.epam.atg.gradle
-
-import com.epam.atg.gradle.manifest.ManifestConfig
-import org.gradle.util.ConfigureUtil
-
-class ATGPluginExtension  {
-
-    File dependenciesTreeOutputFile
-    ManifestConfig manifestConfig
-    String dependenciesSinkPath
-
-    void manifestConfig(Closure configuration) {
-        if (manifestConfig == null) {
-            manifestConfig = new ManifestConfig()
-        }
-        ConfigureUtil.configure(configuration, manifestConfig)
-    }
-
-}
+include ':ModuleA', ':ModuleB'

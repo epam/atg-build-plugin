@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ class ATGDependenciesResolver {
 
     private void addProjectRequiredModulesDependencies(ATGGradleProject atgGradleProject) {
         atgGradleProject.clearModuleDependencyMarkers()
-        List<String> requiredModules = atgGradleProject.atgProjectModule.requiredModules
+        List<String> requiredModules = new ArrayList<>(atgGradleProject.atgProjectModule.requiredModules)
+        requiredModules.addAll(atgGradleProject.atgProjectModule.requiredIfModules)
         LOGGER.info('{} has the following required modules: {}', atgGradleProject, requiredModules)
         addDependencies(atgGradleProject, requiredModules)
     }

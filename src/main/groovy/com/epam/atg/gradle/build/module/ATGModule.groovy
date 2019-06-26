@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 EPAM SYSTEMS INC
+ * Copyright 2019 EPAM SYSTEMS INC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.epam.atg.gradle.build.utils.ManifestUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.jar.Manifest
 
 class ATGModule {
@@ -35,7 +36,8 @@ class ATGModule {
     private List<String> classPathEntries
     private List<File> classPathDependencyFiles
 
-    private List<String> requiredModules
+    private List<String> requiredModules = new CopyOnWriteArrayList<>()
+    private List<String> requiredIfModules = new CopyOnWriteArrayList<>()
 
     ATGModule(String moduleName, File moduleLocation) {
         if (moduleLocation == null || !moduleLocation.exists())
@@ -52,6 +54,7 @@ class ATGModule {
         }
         initializeClassPath(manifest)
         initializeRequiredModules(manifest)
+        initializeRequiredIfModules(manifest)
         initializeNameAndDescription(manifest)
         initializeConfigPath(manifest)
 
@@ -60,6 +63,8 @@ class ATGModule {
 
     private void initializeClassPath(Manifest manifest) {
         classPathEntries = ManifestUtils.getATGModuleClassPath(manifest)
+        //TODO find out if need such functionality
+        //classPathEntries.addAll(ManifestUtils.getATGIndividualResources(manifest))
         classPathDependencyFiles = new ArrayList<>()
         String moduleAbsolutePath = moduleLocation.absolutePath
         LOGGER.debug("initializeClassPath -> moduleAbsolutePath: {}", moduleAbsolutePath)
@@ -74,8 +79,13 @@ class ATGModule {
     }
 
     protected void initializeRequiredModules(Manifest manifest) {
-        requiredModules = ManifestUtils.getATGRequiredModules(manifest)
+        requiredModules.addAll(ManifestUtils.getATGRequiredModules(manifest))
     }
+
+    protected void initializeRequiredIfModules(Manifest manifest) {
+        requiredIfModules.addAll(ManifestUtils.getATGRequiredIfModules(manifest))
+    }
+
 
     private void initializeNameAndDescription(Manifest manifest) {
         description = ManifestUtils.getDescription(manifest)
@@ -83,6 +93,22 @@ class ATGModule {
 
     private void initializeConfigPath(Manifest manifest) {
         atgConfigPath = ManifestUtils.getConfigPath(manifest)
+    }
+
+    void addRequiredModule(String module) {
+        if (!requiredModules.contains(module)) {
+            requiredModules.add(module)
+        } else {
+            LOGGER.warn("module {} already exists in requiredModules", module)
+        }
+    }
+
+    void addRequiredIfPresentModule(String module) {
+        if (!requiredIfModules.contains(module)) {
+            requiredIfModules.add(module)
+        } else {
+            LOGGER.warn("module {} already exists in requiredIfModules", module)
+        }
     }
 
     List<File> getClassPathDependencies() {
@@ -99,6 +125,10 @@ class ATGModule {
 
     List<String> getRequiredModules() {
         return requiredModules.asImmutable()
+    }
+
+    List<String> getRequiredIfModules() {
+        return requiredIfModules.asImmutable()
     }
 
     String getName() {
