@@ -21,7 +21,6 @@ import org.gradle.api.Project
 
 class ATGProjectModule extends ATGModule {
 
-    public static final boolean INITIALIZED = true
     private final Project project
     private boolean scanManifest
 
@@ -45,6 +44,6 @@ class ATGProjectModule extends ATGModule {
         if (isScanManifest) {
             scanManifest = super.initialize()
         }
-        return INITIALIZED
+        return true
     }
 }
