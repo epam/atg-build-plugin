@@ -20,6 +20,7 @@ import com.epam.atg.gradle.build.utils.ManifestUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.jar.Manifest
 
 class ATGModule {
@@ -35,8 +36,8 @@ class ATGModule {
     private List<String> classPathEntries
     private List<File> classPathDependencyFiles
 
-    private List<String> requiredModules = []
-    private List<String> requiredIfModules = []
+    private List<String> requiredModules = new CopyOnWriteArrayList<>()
+    private List<String> requiredIfModules = new CopyOnWriteArrayList<>()
 
     ATGModule(String moduleName, File moduleLocation) {
         if (moduleLocation == null || !moduleLocation.exists())
@@ -94,6 +95,22 @@ class ATGModule {
         atgConfigPath = ManifestUtils.getConfigPath(manifest)
     }
 
+    void addRequiredModule(String module) {
+        if (!requiredModules.contains(module)) {
+            requiredModules.add(module)
+        } else {
+            LOGGER.warn("module {} already exists in requiredModules", module)
+        }
+    }
+
+    void addRequiredIfPresentModule(String module) {
+        if (!requiredIfModules.contains(module)) {
+            requiredIfModules.add(module)
+        } else {
+            LOGGER.warn("module {} already exists in requiredIfModules", module)
+        }
+    }
+
     List<File> getClassPathDependencies() {
         return classPathDependencyFiles.asImmutable()
     }
@@ -107,11 +124,11 @@ class ATGModule {
     }
 
     List<String> getRequiredModules() {
-        return requiredModules
+        return requiredModules.asImmutable()
     }
 
     List<String> getRequiredIfModules() {
-        return requiredIfModules
+        return requiredIfModules.asImmutable()
     }
 
     String getName() {

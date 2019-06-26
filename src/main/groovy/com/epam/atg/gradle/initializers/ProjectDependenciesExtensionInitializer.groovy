@@ -76,9 +76,10 @@ class ProjectDependenciesExtensionInitializer extends AbstractProjectPluginIniti
         if(!module) {
             throw new GradleException("Unable to resolve dependency on module '$atgModuleName'")
         }
-        def modules = ifPresent ? module.requiredIfModules : module.requiredModules
-        if (!modules.contains(atgModuleName)) {
-            modules.add(atgModuleName)
+        if (ifPresent) {
+            module.addRequiredIfPresentModule(atgModuleName)
+        } else {
+            module.addRequiredModule(atgModuleName)
         }
     }
 

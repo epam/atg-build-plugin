@@ -229,7 +229,7 @@ generateAtgClientClassPath | boolean | default false, flag to fill `atgClientCla
 generateIndividualResources | boolean | default false, flag to fill `individualResources` field based on `projectClassPath` field
 skipGeneration | boolean |  default `true`, override to `false` to enable atg manifest generation task for current gradle-atg module/project
 override | boolean | default `false`, allow generation task to regenerate manifest file, if it exists
-manifestFilePath | String | default "META-INF/MANIFEST.MF.new", recommended  override it to "META-INF/MANIFEST.MF"
+manifestFilePath | String | default "META-INF/MANIFEST.MF"
 others | Map | add custom key -> value to generated manifest file
 
 

@@ -39,7 +39,7 @@ class ManifestConfig implements Serializable {
     @Input boolean generateIndividualResources = false
     @Input boolean skipGeneration = true
     @Input boolean override = false
-    @Input String manifestFilePath = "META-INF/MANIFEST.MF.new"
+    @Input String manifestFilePath = "META-INF/MANIFEST.MF"
     @Input Map others = [:]
 
 
