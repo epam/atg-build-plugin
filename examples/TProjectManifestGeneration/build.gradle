@@ -103,8 +103,8 @@ project(":ModuleB") {
 
 task buildEAR(type: RunAssembler) {
     mustRunAfter subprojects*.classes
-    mustRunAfter subprojects.collect { it.identityPath.toString() + ":dependenciesSink" }
-    mustRunAfter subprojects.collect { it.identityPath.toString() + ":generateAtgManifest" }
+    mustRunAfter subprojects*.dependenciesSink
+    mustRunAfter subprojects*.generateAtgManifest
     
     modules = ['DAS', 'RootModule.ModuleA']
     earName = 'ModuleAServer'
@@ -118,8 +118,8 @@ task buildEAR(type: RunAssembler) {
 }
 
 task myReleaseBuild() {
-    dependsOn subprojects.collect { it.identityPath.toString() + ":dependenciesSink" }
-    dependsOn subprojects.collect { it.identityPath.toString() + ":generateAtgManifest" }
+    dependsOn subprojects*.dependenciesSink
+    dependsOn subprojects*.generateAtgManifest
     dependsOn subprojects*.classes
     dependsOn "buildEAR"
 }
