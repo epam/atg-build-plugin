@@ -36,19 +36,23 @@ class GradleTasksInitializer extends AbstractProjectPluginInitializer {
 
         project.configurations.create(ATGPluginConstants.MANIFEST_ATG_CLASSPATH)
 
-        project.afterEvaluate {
-            project.tasks.create(ATGPluginConstants.DEPENDENCIES_SINK_TASK, Copy.class, {  task ->
-                def plugin = ATGPlugin.getPluginExtension(project)
-                task.onlyIf {
-                    println("dependenciesSinkPath: ${plugin.dependenciesSinkPath}")
-                    plugin.dependenciesSinkPath != null
-                }
-                task.setGroup(ATGPluginConstants.ATG_TASK_GROUP)
+        project.tasks.create(ATGPluginConstants.DEPENDENCIES_SINK_TASK, Copy.class, {  task ->
+            def plugin = ATGPlugin.getPluginExtension(project)
+            task.onlyIf {
+                println("dependenciesSinkPath: ${plugin.dependenciesSinkPath}")
+                plugin.dependenciesSinkPath != null
+            }
+            task.setGroup(ATGPluginConstants.ATG_TASK_GROUP)
+            project.afterEvaluate {
                 task.from(project.configurations.atgClassPath)
                 task.into(plugin.dependenciesSinkPath)
-                task.doFirst {project.delete(plugin.dependenciesSinkPath)}
-            })
-            project.tasks.create(ATGPluginConstants.MANIFEST_TASK, ManifestGeneratorTask.class, { task ->
+            }
+            task.doFirst {project.delete(plugin.dependenciesSinkPath)}
+        })
+
+        project.tasks.create(ATGPluginConstants.MANIFEST_TASK, ManifestGeneratorTask.class, { task ->
+            task.setGroup(ATGPluginConstants.ATG_TASK_GROUP)
+            project.afterEvaluate {
                 ManifestConfig manifestConfig = buildAtgManifestConfig(project)
                 task.onlyIf {
                     if (manifestConfig == null) {
@@ -59,11 +63,10 @@ class GradleTasksInitializer extends AbstractProjectPluginInitializer {
                     boolean skipGeneration = manifestConfig.skipGeneration
                     return !skipGeneration && (override || notExist)
                 }
-                task.setGroup(ATGPluginConstants.ATG_TASK_GROUP)
                 task.manifestConfig = manifestConfig
                 task.outputFile = new File(project.projectDir.absolutePath + '/' + manifestConfig?.manifestFilePath)
-            })
-        }
+            }
+        })
     }
 
     private ManifestConfig buildAtgManifestConfig(Project project) {
